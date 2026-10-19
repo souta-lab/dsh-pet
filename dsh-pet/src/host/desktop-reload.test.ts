@@ -1,9 +1,9 @@
 /**
- * 桌面端「重载配置」契约测试：右键菜单 → POST /dsh-pet-7340/reload → 宿主 syncDesktop()。
+ * 桌面端「設定を再読み込み」契约测试：右键菜单 → POST /dsh-pet-7340/reload → 宿主 syncDesktop()。
  *
  * 背景：桌面宠物的配置只在 Helper 启动时拉一次（renderer.js 的 boot → GET /config），手改配置文件后
  * 桌面端不会自己跟上——此前唯一的生效途径是回设置页点「保存」，而保存只是顺带重启了 Helper。
- * 菜单项「重载配置」把这条路径显式暴露出来（浏览器端刷新页面即可，故为桌面专属）。
+ * 菜单项「設定を再読み込み」把这条路径显式暴露出来（浏览器端刷新页面即可，故为桌面专属）。
  *
  * 为什么必须走「宿主重启 Helper」而不是渲染端就地重拉配置：
  *   ① 每只桌面宠物一个窗口，是宿主启动时按 DSH_PET_PETS 建的——就地重拉改不了宠物数量 / display / size；
@@ -31,7 +31,7 @@ const sprite = readSource('../../runtime/electron-helper/sprite.js');
 const clientPet = readSource('../client/pet.ts');
 const menu = readSource('../shared/menu.ts');
 
-describe('桌面端「重载配置」—— 菜单 → 宿主重启 Helper', () => {
+describe('桌面端「設定を再読み込み」—— 菜单 → 宿主重启 Helper', () => {
   test('宿主：POST /reload 复用 syncDesktop()，且只重启、不写配置文件', () => {
     const block = /if \(rest === 'reload'\) \{([\s\S]*?)\n {4}\}/.exec(host);
     assert.ok(block, '宿主必须有 /reload 路由');
@@ -45,7 +45,7 @@ describe('桌面端「重载配置」—— 菜单 → 宿主重启 Helper', () 
   });
 
   test('桌面端：菜单项存在、动作有分支，且请求的路由名与宿主一致', () => {
-    assert.ok(/label: '重载配置', action: 'reload'/.test(sprite), '桌面端右键菜单必须有「重载配置」项');
+    assert.ok(/label: '設定を再読み込み', action: 'reload'/.test(sprite), '桌面端右键菜单必须有「設定を再読み込み」项');
     assert.ok(/leaf\.action === 'reload'/.test(sprite), 'onMenuAction 必须有 reload 分支（否则点了没反应）');
     const m = /fetch\(BASE \+ '\/([a-z-]+)', \{ method: 'POST' \}\)/.exec(sprite);
     assert.ok(m, "reloadDesktop() 必须 POST 到 BASE + '/<路由名>'（bridge 已支持 POST，无需新增 IPC）");

@@ -77,11 +77,11 @@ export async function generateChat(
   // 候选链：配置的模型优先 → 当前对话的模型兜底（chatModel 留空时链上只有后者，与旧版逐字一致）
   const candidates = modelCandidates(ctx, preferred);
   if (candidates.length === 0) {
-    return { ok: false, reason: 'provider-missing', message: '当前对话未配置模型' };
+    return { ok: false, reason: 'provider-missing', message: '現在の会話にモデルが設定されていません' };
   }
   const llm = (ctx as { llm?: { stream(o: unknown): AsyncIterable<unknown> } }).llm;
   if (!llm || typeof llm.stream !== 'function') {
-    return { ok: false, reason: 'generate-error', message: 'LLM 服务不可用' };
+    return { ok: false, reason: 'generate-error', message: 'LLMサービスを利用できません' };
   }
   // 依次尝试：配置的模型失败（凭据被删 / 模型下架 / 该服务商没配 key）时**回落到当前对话的模型
   // 重试一次**，仍失败才抛出失败原因——最后一次是用户当前真正在用的模型，报错更有意义。

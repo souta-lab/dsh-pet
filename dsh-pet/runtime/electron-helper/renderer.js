@@ -12,7 +12,7 @@
  *     并显示红色错误条（每 5s 自动重试），绝无静默兜底池；
  *   - 动画素材经宿主 /dsh-pet-7340/thumb/<素材根>/<name>.<webm|mov>（素材根 = 条目 key；扩展名由共享常量 ANIMATION_EXT 决定）；
  *   - 几何模型：窗口 = 宠物包围盒 + 四周外扩余量（WINDOW_MARGIN_RATIO，为气泡/弹窗预留空间）。
- *     sprite 固定在窗口内 (margin.l, margin.t) 处，宠物的"移动"由本页把目标屏幕位置
+ *     sprite 固定在窗口内 (margin.l, margin.t) 处，宠物的"移動"由本页把目标屏幕位置
  *     逐帧上报（petBridge.setBounds）→ 主进程按 sprite 位置 + 外扩余量移动窗口；
  *     视口 = 全部显示器工作区外接矩形（workAreaX/Y/W/H 由主进程注入），漫游/抛掷/角落/位置换算
  *     都跨屏（#43，宠物可被甩/拖到其它显示器）；单显示器时即主屏工作区，行为不变。
@@ -28,7 +28,7 @@
 function showError(message) {
   console.error('[dsh-pet] ' + message);
   window.__dshPetDebug.configOk = false;
-  errorEl.textContent = 'dsh-pet 配置错误：' + message;
+  errorEl.textContent = 'dsh-pet 設定エラー：' + message;
   errorEl.classList.add('visible');
 }
 function hideError() {

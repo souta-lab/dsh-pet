@@ -46,11 +46,15 @@ export function frameToToast(frame: NotifyFrame): { title: string; body: string;
       const ev = (frame.event ?? {}) as TurnEndEvent;
       if (ev.type !== 'turn/end') return null;
       const kind = ev.data?.reason?.kind;
-      if (kind === 'completed') return { title: '对话完成', body: '', icon: NOTIFY_ICONS.done };
+      if (kind === 'completed') return { title: '会話が完了しました', body: '', icon: NOTIFY_ICONS.done };
       if (kind === 'error')
-        return { title: '生成失败', body: ev.data?.reason?.error?.message ?? '', icon: NOTIFY_ICONS.error };
+        return { title: '生成に失敗しました', body: ev.data?.reason?.error?.message ?? '', icon: NOTIFY_ICONS.error };
       if (kind === 'max-tokens')
-        return { title: '输出被截断', body: '已达到输出 token 上限', icon: NOTIFY_ICONS.truncated };
+        return {
+          title: '出力が打ち切られました',
+          body: '出力トークンの上限に達しました',
+          icon: NOTIFY_ICONS.truncated,
+        };
       // aborted（用户/父代理取消）、interrupted（崩溃恢复）等：不弹
       return null;
     }
@@ -58,19 +62,19 @@ export function frameToToast(frame: NotifyFrame): { title: string; body: string;
       const toolName = typeof frame.toolName === 'string' ? frame.toolName : '';
       const reason = typeof frame.reason === 'string' && frame.reason ? frame.reason : '';
       return {
-        title: '正在申请权限',
-        body: (toolName ? '工具「' + toolName + '」' : '') + (reason ? '：' + reason : ''),
+        title: '権限の許可が必要です',
+        body: (toolName ? 'ツール「' + toolName + '」' : '') + (reason ? '：' + reason : ''),
         icon: NOTIFY_ICONS.approval,
       };
     }
     case 'question/requested': {
       const q =
         (Array.isArray(frame.questions) && (frame.questions as Array<{ question?: string }>)[0]?.question) || '';
-      return { title: '模型在等你回答', body: q, icon: NOTIFY_ICONS.question };
+      return { title: '回答を待っています', body: q, icon: NOTIFY_ICONS.question };
     }
     case 'host/agent-error': {
       return {
-        title: '生成失败',
+        title: '生成に失敗しました',
         body: typeof frame.message === 'string' ? (frame.message as string) : '',
         icon: NOTIFY_ICONS.error,
       };

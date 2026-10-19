@@ -28,7 +28,7 @@ export async function sendChat(baseUrl: string, text: string): Promise<ChatSendS
     signal: AbortSignal.timeout(SEND_TIMEOUT_MS),
   });
   const raw: unknown = await res.json().catch(() => null);
-  if (!raw || typeof raw !== 'object') throw new Error('dsh-pet: 对话响应非法');
+  if (!raw || typeof raw !== 'object') throw new Error('dsh-pet: チャットの応答が不正です');
   const o = raw as Record<string, unknown>;
   if (o.ok !== true) {
     return {
@@ -125,7 +125,7 @@ export function mountChatDialog(opts: {
 
   const input = document.createElement('textarea');
   input.className = 'dsh-pet-chat-input';
-  input.placeholder = '说点什么…';
+  input.placeholder = '何か話しかけてみて…';
   input.maxLength = 2000;
   input.rows = 1;
 
@@ -196,12 +196,12 @@ export function mountChatDialog(opts: {
           close();
           if (onSent) onSent();
         } else {
-          err.textContent = '对话失败：' + (state.message ?? state.reason);
+          err.textContent = 'チャットに失敗：' + (state.message ?? state.reason);
           err.style.display = 'block';
         }
       })
       .catch((e) => {
-        err.textContent = '对话异常：' + String(e && e.message ? e.message : e);
+        err.textContent = 'チャットエラー：' + String(e && e.message ? e.message : e);
         err.style.display = 'block';
       })
       .finally(() => {

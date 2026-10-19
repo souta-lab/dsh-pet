@@ -41,8 +41,8 @@ const unsupported: BalanceState = { provider: 'unregistered-provider', ok: false
 describe('balanceBubbleView —— 不可用状态必须给出可读的文字说明', () => {
   test('unsupported：报出「不支持」+ 当前服务商 id（便于自查到底是谁）', () => {
     assert.deepEqual(balanceBubbleView(unsupported), [
-      { role: 'error', text: '当前服务商暂不支持余额查询' },
-      { role: 'sub', text: '当前服务商：unregistered-provider' },
+      { role: 'error', text: 'このプロバイダーは残高照会に対応していません' },
+      { role: 'sub', text: 'プロバイダー：unregistered-provider' },
     ]);
   });
 
@@ -54,7 +54,7 @@ describe('balanceBubbleView —— 不可用状态必须给出可读的文字说
       message: '缺少凭证 DEEPSEEK_API_KEY',
     });
     assert.deepEqual(rows, [
-      { role: 'error', text: '缺少余额查询凭证' },
+      { role: 'error', text: '残高照会の認証情報がありません' },
       { role: 'sub', text: '缺少凭证 DEEPSEEK_API_KEY' },
     ]);
     assert.equal(
@@ -68,17 +68,17 @@ describe('balanceBubbleView —— 不可用状态必须给出可读的文字说
     assert.deepEqual(
       balanceBubbleView({ provider: 'deepseek-official', ok: false, reason: 'fetch-error', message: 'HTTP 401' }),
       [
-        { role: 'error', text: '余额查询失败' },
+        { role: 'error', text: '残高を取得できませんでした' },
         { role: 'sub', text: 'HTTP 401' },
       ],
     );
     assert.deepEqual(balanceBubbleView({ provider: 'deepseek-official', ok: false, reason: 'fetch-error' }), [
-      { role: 'error', text: '余额查询失败' },
+      { role: 'error', text: '残高を取得できませんでした' },
     ]);
   });
 
   test('成功路径不受影响（opencode 两行 / deepseek 单行含峰谷档位）', () => {
-    // 取三窗口里最紧迫（剩余最少）的那个：weekly 75% 剩余 7.5 USD 最少 → 「周额度已用 75%」
+    // 取三窗口里最紧迫（剩余最少）的那个：weekly 75% 剩余 7.5 USD 最少 → 「週使用量 75%」
     const rows = balanceBubbleView({
       provider: 'opencode-go',
       ok: true,
@@ -91,7 +91,7 @@ describe('balanceBubbleView —— 不可用状态必须给出可读的文字说
       monthlyCapUsd: 60,
       rollingLabel: '5h',
     });
-    assert.equal(rows[0]?.text, '周额度已用 75%');
+    assert.equal(rows[0]?.text, '週使用量 75%');
     assert.equal(rows[1]?.role, 'sub');
 
     const ds = balanceBubbleView({
@@ -101,12 +101,12 @@ describe('balanceBubbleView —— 不可用状态必须给出可读的文字说
       total: '8.79',
       tier: 'idle',
     });
-    assert.equal(ds[0]?.text, '余额（');
+    assert.equal(ds[0]?.text, '残高（');
     assert.equal(ds[1]?.role, 'tier'); // 峰/谷由数据带出，这里只钉结构与金额
     assert.equal(ds[2]?.text, '）¥8.79');
   });
 
-  test('money：服务商没给档位装饰时不编峰谷，退化成「余额 ¥x.xx」', () => {
+  test('money：服务商没给档位装饰时不编峰谷，退化成「残高 ¥x.xx」', () => {
     const rows = balanceBubbleView({
       provider: 'some-wallet',
       ok: true,
@@ -114,7 +114,7 @@ describe('balanceBubbleView —— 不可用状态必须给出可读的文字说
       currency: 'CNY',
       total: '8.79',
     });
-    assert.deepEqual(rows, [{ role: 'label', text: '余额 ¥8.79' }]);
+    assert.deepEqual(rows, [{ role: 'label', text: '残高 ¥8.79' }]);
   });
 
   test('windows：滚动窗展示名由数据带出，缺省回落 5h', () => {
@@ -153,7 +153,7 @@ describe('balanceBubbleView —— 不可用状态必须给出可读的文字说
       official.map((r) => r.role),
       '两端的行结构必须逐位一致',
     );
-    assert.equal(account[0]?.text, '余额（');
+    assert.equal(account[0]?.text, '残高（');
     assert.equal(account[2]?.text, '）¥9.99');
 
     // USD 钱包：同一位置换成 $（其余逐字不变）
@@ -269,7 +269,7 @@ describe('commandcode —— 三窗口用量走与 opencode 同一套展示口�
     };
     assert.equal(balancePercent(view), 40);
     const rows = balanceBubbleView(view);
-    assert.equal(rows[0]?.text, '月额度已用 40%');
+    assert.equal(rows[0]?.text, '月使用量 40%');
     assert.equal(rows[1]?.role, 'sub');
   });
 
@@ -299,7 +299,7 @@ describe('commandcode —— 三窗口用量走与 opencode 同一套展示口�
       monthly: 20,
       monthlyCapUsd: 70,
     });
-    assert.equal(rows[0]?.text, '周额度已用 75%');
+    assert.equal(rows[0]?.text, '週使用量 75%');
   });
 
   test('告急窗口：有窗口给不出满额度 → 退化为百分比口径（不硬比绝对剩余）', () => {
@@ -315,7 +315,7 @@ describe('commandcode —— 三窗口用量走与 opencode 同一套展示口�
       weeklyCapUsd: 35,
       monthly: 0,
     });
-    assert.equal(rows[0]?.text, '周额度已用 50%');
+    assert.equal(rows[0]?.text, '週使用量 50%');
   });
 
   test('balancePercent：三窗口取最大（档位动画与 opencode 同一条数学）', () => {

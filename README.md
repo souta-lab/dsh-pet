@@ -1,3 +1,5 @@
+> **日本語版**：使い方と変更点は [README.ja.md](README.ja.md) を参照してください。
+
 # dsh-pet 🐾
 
 <p align="center">

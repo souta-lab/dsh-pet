@@ -728,7 +728,7 @@ async function startTray() {
       .filter((pet) => pet.id);
     if (!pets.length) return; // 配置里没有任何宠物：没有可切换的对象，不建托盘
     tray = new Tray(trayIcon());
-    tray.setToolTip('dsh-pet 桌面宠物');
+    tray.setToolTip('dsh-pet デスクトップペット');
     tray.setContextMenu(
       Menu.buildFromTemplate(
         pets.map((pet) => ({

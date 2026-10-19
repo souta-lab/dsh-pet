@@ -1937,10 +1937,10 @@ export function makePetUI(rt: {
       // 「查看余额」**无条件显示**（与桌面端一致）：即使该宠物关了 balanceEnabled 也能点——手动请求不受开关限制
       //（该开关只关自动轮询与档位动画），与碎碎念「手动触发不受 whisperEnabled 限制」同一条原则。
       const tree: MenuNode[] = [
-        { label: '查看余额', action: 'show-balance' },
-        { label: '碎碎念', action: 'whisper' },
-        { label: '对话', action: 'chat' },
-        { label: '回到初始位置', action: 'home' },
+        { label: '残高を確認', action: 'show-balance' },
+        { label: 'ひとりごと', action: 'whisper' },
+        { label: 'チャット', action: 'chat' },
+        { label: '初期位置に戻す', action: 'home' },
         // 显示位置（仅网页/仅桌面/两者/都不）：与桌面端注入**同一份**子菜单。
         // 改成不含 web 的值（仅桌面/都不）后，本宠物会随即从 visiblePets 里消失——字面意义上的"自己走掉"。
         displayMenuBranch(),

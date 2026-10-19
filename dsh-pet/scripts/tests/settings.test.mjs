@@ -121,7 +121,7 @@ async function open(t, { get = customized, viewport = { width: 900, height: 900 
 async function save(page) {
   await Promise.all([
     page.waitForResponse((response) => response.request().method() === 'PUT'),
-    page.getByRole('button', { name: 'Save', exact: true }).click(),
+    page.getByRole('button', { name: 'Save', exact: true }).first().click(),
   ]);
 }
 
@@ -137,7 +137,7 @@ test('pending config prevents editing and saving placeholder defaults', async (t
     },
   });
   try {
-    assert.equal(await page.getByRole('button', { name: 'Save', exact: true }).isDisabled(), true);
+    assert.equal(await page.getByRole('button', { name: 'Save', exact: true }).first().isDisabled(), true);
     assert.equal(await page.locator('input[type=text]').first().isDisabled(), true);
     assert.deepEqual(writes, []);
   } finally {
@@ -159,7 +159,7 @@ for (const failure of ['http', 'network', 'malformed', 'null']) {
               ),
     });
     await page.getByRole('alert').waitFor();
-    assert.equal(await page.getByRole('button', { name: 'Save', exact: true }).isDisabled(), true);
+    assert.equal(await page.getByRole('button', { name: 'Save', exact: true }).first().isDisabled(), true);
     assert.deepEqual(writes, []);
     fail = false;
     await page.getByRole('button', { name: 'Retry', exact: true }).click();
@@ -187,7 +187,7 @@ test('fresh config refreshes the pet list instead of saving an old bridge snapsh
   assert.deepEqual(writes[0].pets, fresh.main.pets);
 });
 
-for (const lang of ['en', 'zh']) {
+for (const lang of ['en', 'zh', 'ja']) {
   for (const width of [360, 520, 900]) {
     test(`settings keep controls and toggle labels readable (${lang}, ${width}px)`, async (t) => {
       const { page } = await open(t, { viewport: { width, height: 800 }, lang });

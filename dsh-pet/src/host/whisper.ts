@@ -35,7 +35,7 @@ export type WhisperGenerateResult =
 const TIMEOUT_MS = 30_000;
 
 /** 碎碎念指令：纯文本（原行为） */
-const USER_TEXT = '随便说一句日常碎碎念，一句就好，20 字以内。';
+const USER_TEXT = '日常のひとりごとを、日本語で自然な一文、30文字以内で話してください。';
 
 /**
  * 碎碎念指令：带表情包（用户开启 whisperImageEnabled 时）——要求模型配合作画说一句。
@@ -43,13 +43,13 @@ const USER_TEXT = '随便说一句日常碎碎念，一句就好，20 字以内�
  */
 function userTextWithMeme(meme: { name: string; desc: string }): string {
   return (
-    '随便说一句日常碎碎念，一句就好，20 字以内。\n' +
-    '这次会配一张表情包一起显示，图的内容是：' +
+    '日常のひとりごとを、日本語で自然な一文、30文字以内で話してください。\n' +
+    '今回添付するリアクション画像の内容：' +
     meme.name +
     '（' +
     meme.desc +
     '）。\n' +
-    '请让这句话和这张图的情绪/场景自然契合，像是配合画面说出来的；不要描述画面本身。'
+    '画像の感情や場面に自然に合うひとことにしてください。画像そのものを説明しないでください。'
   );
 }
 
@@ -71,12 +71,12 @@ export async function generateWhisper(
   // 候选链：配置的模型优先 → 当前对话的模型兜底（whisperModel 留空时链上只有后者，与旧版逐字一致）
   const candidates = modelCandidates(ctx, preferred);
   if (candidates.length === 0) {
-    return { ok: false, reason: 'provider-missing', message: '当前对话未配置模型' };
+    return { ok: false, reason: 'provider-missing', message: '現在の会話にモデルが設定されていません' };
   }
   // ctx.llm 是核心服务但保持防御：缺失时显式失败（静默跳过由上层决定）
   const llm = (ctx as { llm?: { stream(o: unknown): AsyncIterable<unknown> } }).llm;
   if (!llm || typeof llm.stream !== 'function') {
-    return { ok: false, reason: 'generate-error', message: 'LLM 服务不可用' };
+    return { ok: false, reason: 'generate-error', message: 'LLMサービスを利用できません' };
   }
   // 依次尝试：配置的模型失败（凭据被删 / 模型下架 / 该服务商没配 key）时**回落到当前对话的模型
   // 重试一次**，仍失败才抛出失败原因——最后一次是用户当前真正在用的模型，报错更有意义。

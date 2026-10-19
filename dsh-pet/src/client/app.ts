@@ -1,8 +1,9 @@
+import { ja } from './ja';
 // client 半侧「装配层」：注入 react → 组装两个页面组件 → 注册进 DSH 插槽。
 // 页面代码不在本文件：宠物页面在 pet.ts，设置页在 settings.ts——
 // 类似 Vue 的 App.vue 只挂根组件、SpringBoot 启动类只做装配，不写页面业务。
 import { makePetUI } from './pet';
-import { makePetConfigSection, NS, zh, en, petBridge } from './settings';
+import { makePetConfigSection, NS, petBridge } from './settings';
 import { initNotify } from './notify';
 import { installCommandFaces, type CommandFace, type CommandUiLike } from './command-faces';
 import { installSectionNavIcon } from './nav-icon';
@@ -65,7 +66,7 @@ export function makeFactory(): (require: (mod: string) => any) => any {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DSH 注入的 ctx（locale/slots/webServer 等 service 无静态类型）
     function apply(ctx: any) {
       // 本地化字典（设置页文案）
-      ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'dsh-pet: dictionaries');
+      ctx.effect(() => ctx.locale.register(NS, { zh: ja, en: ja, ja }), 'dsh-pet: dictionaries');
       const t = ctx.locale.bind(NS);
 
       // 系统通知：host 侧监听 DSH 宿主事件生成通知帧，写进 /state 的 sections.notify；

@@ -10,7 +10,7 @@
  * 用法：node scripts/gen-types.mjs（npm run types）
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, renameSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -42,7 +42,8 @@ if (tsc.status !== 0) {
 // 宿主半侧声明上移到 lib/types/ 根（lib/types/index.d.ts），client 子树保持不变。
 if (existsSync(HOST_OUT)) {
   for (const name of readdirSync(HOST_OUT)) {
-    renameSync(join(HOST_OUT, name), join(TYPES, name));
+    // Copy recursively so rebuilding also works when the target directory already exists.
+    cpSync(join(HOST_OUT, name), join(TYPES, name), { recursive: true, force: true });
   }
   rmSync(HOST_OUT, { recursive: true, force: true });
 }

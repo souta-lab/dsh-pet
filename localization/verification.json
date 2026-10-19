@@ -1,0 +1,202 @@
+{
+  "sourceRepository": "PC2005-cloud/dsh-pet",
+  "sourceCommit": "97f13966e2a2f8aa43462f630a61c7b97a89ffe7",
+  "method": "Original full image plus original caption crops provided to image generation. Only generated caption crops or lettering composited onto original pixels. Border-connected white backgrounds receive alpha; illustrated scene backgrounds retained.",
+  "memes": [
+    {
+      "name": "假如给我三天多模态",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 70042,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "先养着吧",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 58870,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "厉害了我的鲸",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 49688,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "压力一只大肥鱼",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 56573,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "吃白饭的大肥鱼",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 29394,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "吃饱饱摸肚子",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 79282,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "哦鲸鲸",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 72348,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "哪来的电脑病毒",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 0,
+      "width": 384,
+      "height": 355
+    },
+    {
+      "name": "大师这个区是什么意思",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 76769,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "大烧货",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 49812,
+      "width": 384,
+      "height": 365
+    },
+    {
+      "name": "大的药来了",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 53331,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "大的要来啦",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 75979,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "完蛋了把黄油删了",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 0,
+      "width": 384,
+      "height": 349
+    },
+    {
+      "name": "就一碗",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 48821,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "就骚了怎么滴吧",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 77668,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "我不更新你们用什么",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 0,
+      "width": 384,
+      "height": 288
+    },
+    {
+      "name": "死掉了",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 75741,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "电死你",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 0,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "要不直接骂他",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 65050,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "誓死践行开源精神",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 50377,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "除了调情没啥用",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 54111,
+      "width": 384,
+      "height": 382
+    },
+    {
+      "name": "鱼片有资源吗",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 0,
+      "width": 384,
+      "height": 384
+    },
+    {
+      "name": "黎曼猜想没证明喵",
+      "outsideCaptionRGBChanges": 0,
+      "transparentPixels": 0,
+      "width": 384,
+      "height": 372
+    },
+    {
+      "name": "token给妈妈保管",
+      "outsideCaptionRGBChanges": 0,
+      "width": 384,
+      "height": 384
+    }
+  ],
+  "videos": [
+    {
+      "name": "是啊，吃什么",
+      "frames": 241,
+      "fps": 24,
+      "alpha": true,
+      "method": "Original frame glyph inpainting and reference-generated Japanese lettering; original character animation retained."
+    },
+    {
+      "name": "深度思考碎碎念",
+      "frames": 241,
+      "fps": 24,
+      "alpha": true,
+      "method": "Original frame glyph inpainting and reference-generated Japanese lettering; original character animation retained."
+    }
+  ],
+  "validation": {
+    "unitTests": 853,
+    "unitPassed": 853,
+    "browserUiTests": 17,
+    "browserUiPassed": 17,
+    "japaneseViewportsPx": [
+      360,
+      520,
+      900
+    ],
+    "openapi": "passed"
+  }
+}

@@ -147,7 +147,7 @@ export function mountScorePopup(opts: {
   val.textContent = '+' + opts.score;
   const sub = document.createElement('div');
   sub.className = 'dsh-pet-score-sub';
-  sub.textContent = '速度 ' + Math.round(opts.speed) + ' · 大小 ' + Math.round(opts.size);
+  sub.textContent = '速度 ' + Math.round(opts.speed) + ' · 大きさ ' + Math.round(opts.size);
   root.appendChild(val);
   root.appendChild(sub);
   document.body.appendChild(root);

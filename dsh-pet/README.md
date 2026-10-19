@@ -1,3 +1,6 @@
+> **日本語版 0.3.7-ja.1** — 設定・通知・チャット・画像・文字入りアニメーションを日本語化しています。
+> 詳細は [日本語README](https://github.com/souta-lab/dsh-pet/blob/ja/README.ja.md) を参照してください。
+
 # dsh-pet 🐾
 
 <p align="center">

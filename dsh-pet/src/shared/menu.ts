@@ -1,3 +1,4 @@
+import { jaAnimationLabel } from './ja-labels';
 // 统一右键菜单组件 —— 桌面（renderer.js 经 shared-core）与浏览器（pet.ts 经 bundle）
 // 共用**同一份**菜单树与**同一份**渲染实现（"全部同一个组件"，两端行为/外观严格一致）。
 //
@@ -59,23 +60,23 @@ export type MenuNode = MenuLeaf | MenuBranch;
  * 唯一入口，本菜单只是多加了一条更近的路，没有削弱任何既有能力。
  */
 export const displayMenuBranch = (): MenuBranch => ({
-  label: '显示位置',
+  label: '表示先',
   children: [
-    { label: '仅网页', action: 'set-display', display: 'web' },
-    { label: '仅桌面', action: 'set-display', display: 'desktop' },
-    { label: '两者', action: 'set-display', display: 'both' },
-    { label: '都不', action: 'set-display', display: 'none' },
+    { label: 'ブラウザーのみ', action: 'set-display', display: 'web' },
+    { label: 'デスクトップのみ', action: 'set-display', display: 'desktop' },
+    { label: '両方', action: 'set-display', display: 'both' },
+    { label: '非表示', action: 'set-display', display: 'none' },
   ],
 });
 
 /** 事件名 → 分类标签（无映射时用事件名本身） */
 const EVENT_LABELS: Record<string, string> = {
-  balance: '余额档位',
-  whisper: '碎碎念',
-  workStatus: '工作状态',
+  balance: '残高別',
+  whisper: 'ひとりごと',
+  workStatus: '作業状況',
 };
 
-const leaf = (anim: string): MenuLeaf => ({ label: anim, anim });
+const leaf = (anim: string): MenuLeaf => ({ label: jaAnimationLabel(anim), anim });
 
 /**
  * 由合并后的 animations 配置推导菜单树 —— 输出 [{ 动作 → [ 分类 → [ 具体动画 ] ] }]：
@@ -85,11 +86,11 @@ const leaf = (anim: string): MenuLeaf => ({ label: anim, anim });
 export function buildMenuTree(animations: Animations): MenuNode[] {
   const groups: MenuNode[] = [];
   const pools: Array<[string, string[]]> = [
-    ['待机', animations.idle],
-    ['转向', animations.turn],
-    ['拖拽', animations.drag],
-    ['点击回应', animations.clicks],
-    ['移动', animations.moves.actions.map((m) => m.name)],
+    ['待機', animations.idle],
+    ['方向転換', animations.turn],
+    ['ドラッグ', animations.drag],
+    ['クリック反応', animations.clicks],
+    ['移動', animations.moves.actions.map((m) => m.name)],
   ];
   for (const [label, pool] of pools) {
     if (pool.length) groups.push({ label, children: pool.map(leaf) });
@@ -97,7 +98,7 @@ export function buildMenuTree(animations: Animations): MenuNode[] {
   // config 随机动作分类（noMirror 分类照样可点播，播放端朝右时强制朝左见 isNoMirrorAnimation）
   const cats = (animations.categories ?? []).filter((c) => c.actions.length > 0);
   for (const c of cats) {
-    groups.push({ label: c.id, children: c.actions.map(leaf) });
+    groups.push({ label: jaAnimationLabel(c.id), children: c.actions.map(leaf) });
   }
   // 事件动画：每个事件为一个分类（不来自随机链，点播与代码触发同一池）。
   // 数组槽位（档内随机候选）展平为逐个叶子——所有候选都可右键点播预览。
@@ -112,7 +113,7 @@ export function buildMenuTree(animations: Animations): MenuNode[] {
     if (names.length) groups.push({ label: EVENT_LABELS[key] ?? key, children: names.map(leaf) });
   }
   if (!groups.length) return [];
-  return [{ label: '动作', children: groups }];
+  return [{ label: 'アクション', children: groups }];
 }
 
 /** 该动画是否属于 noMirror 分类（文字类）：朝右（镜像）时点播前强制朝左，避免文字镜像 */
@@ -125,7 +126,7 @@ export function isNoMirrorAnimation(categories: Category[], anim: string): boole
  *  面板与面板之间互不嵌套，各自独立滚动。 */
 export const MENU_CSS = [
   '.dsh-pet-menu{position:fixed;left:0;top:0;z-index:2147483000;color:#2b2b2b;font-size:13px;line-height:1.5;',
-  "font-family:'Microsoft YaHei UI','Segoe UI','PingFang SC',sans-serif;user-select:none;pointer-events:auto}",
+  "font-family:'Noto Sans CJK JP','Yu Gothic','Hiragino Sans','Meiryo','Microsoft YaHei UI','Segoe UI','PingFang SC',sans-serif;user-select:none;pointer-events:auto}",
   '.dsh-pet-menu,.dsh-pet-menu *{box-sizing:border-box}',
   '.dsh-pet-menu-column{position:absolute;min-width:150px;max-width:240px;padding:4px;',
   'background:rgba(255,255,255,.98);border:1px solid rgba(0,0,0,.12);border-radius:8px;',

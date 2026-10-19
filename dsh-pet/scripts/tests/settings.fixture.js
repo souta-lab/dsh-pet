@@ -1,3 +1,4 @@
+import { ja } from '../../src/client/ja.ts';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { jsx } from 'react/jsx-runtime';
@@ -5,7 +6,8 @@ import { makePetConfigSection, petBridge, en, zh } from '../../src/client/settin
 
 petBridge.current = window.initialConfig.main.pets;
 petBridge.template = petBridge.current[0];
-const dictionary = new URLSearchParams(location.search).get('lang') === 'zh' ? zh : en;
+const lang = new URLSearchParams(location.search).get('lang');
+const dictionary = lang === 'ja' ? ja : lang === 'zh' ? zh : en;
 const Section = makePetConfigSection({
   h: jsx,
   useState,

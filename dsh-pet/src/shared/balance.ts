@@ -207,7 +207,7 @@ export type WindowKey = 'rolling' | 'weekly' | 'monthly';
  * 滚动窗的时长是**服务商自己的业务事实**（如 5 小时），不走这张表，见 DEFAULT_ROLLING_LABEL。
  */
 export const WINDOW_LABELS = {
-  weekly: '周',
+  weekly: '週',
   monthly: '月',
 } as const;
 
@@ -295,7 +295,7 @@ export function resetInText(iso?: string): string {
   const t = new Date(iso).getTime();
   if (!Number.isFinite(t)) return '';
   const delta = t - Date.now();
-  if (delta <= 0) return '已重置';
+  if (delta <= 0) return 'リセット済み';
   const hoursF = delta / 3_600_000;
   if (hoursF >= 96) return (Math.round((hoursF / 24) * 10) / 10).toFixed(1) + ' 天';
   return Math.max(0.1, Math.round(hoursF * 10) / 10).toFixed(1) + ' 小时';
@@ -319,18 +319,18 @@ function unavailableRows(state: BalanceUnavailable): BalanceBubbleRow[] {
   const rows: BalanceBubbleRow[] =
     state.reason === 'unsupported'
       ? [
-          { role: 'error', text: '当前服务商暂不支持余额查询' },
-          { role: 'sub', text: '当前服务商：' + state.provider },
+          { role: 'error', text: 'このプロバイダーは残高照会に対応していません' },
+          { role: 'sub', text: 'プロバイダー：' + state.provider },
         ]
       : state.reason === 'credential-missing'
         ? [
             // host 的 message 本身已带「缺少凭证 X」前缀：这里只作次要行原样展示，不再加前缀
             // （曾经的「缺少凭证：缺少凭证 X」双重前缀）
-            { role: 'error', text: '缺少余额查询凭证' },
+            { role: 'error', text: '残高照会の認証情報がありません' },
             { role: 'sub', text: state.message ?? '' },
           ]
         : [
-            { role: 'error', text: '余额查询失败' },
+            { role: 'error', text: '残高を取得できませんでした' },
             { role: 'sub', text: state.message ?? '' },
           ];
   return rows.filter((r) => r.text !== '');
@@ -351,21 +351,21 @@ export function balanceBubbleView(state: BalanceState): BalanceBubbleRow[] {
       if (w) {
         const reset = resetInText(w.resetsAt);
         const rows: BalanceBubbleRow[] = [
-          { role: 'label', text: w.label + '额度已用 ' + Math.round(w.percent) + '%' },
-          { role: 'sub', text: reset ? reset + '重置' : '已重置' },
+          { role: 'label', text: w.label + '使用量 ' + Math.round(w.percent) + '%' },
+          { role: 'sub', text: reset ? reset + '後にリセット' : 'リセット済み' },
         ];
         return rows;
       }
-      return [{ role: 'label', text: '额度数据不可用' }];
+      return [{ role: 'label', text: '利用枠のデータを取得できません' }];
     }
     // money：币种符号由数据带出（CNY → ¥，USD → $）
     const symbol = state.currency === 'USD' ? '$' : '¥';
     const amount = symbol + (state.total ?? '-');
     // 档位装饰（峰/谷）只有提供该计价规则的服务商才有；没有就不加括号那一段
-    if (!state.tier) return [{ role: 'label', text: '余额 ' + amount }];
+    if (!state.tier) return [{ role: 'label', text: '残高 ' + amount }];
     return [
-      { role: 'label', text: '余额（' },
-      { role: 'tier', tier: state.tier, text: state.tier === 'peak' ? '峰' : '谷' },
+      { role: 'label', text: '残高（' },
+      { role: 'tier', tier: state.tier, text: state.tier === 'peak' ? 'ピーク' : 'オフピーク' },
       { role: 'label', text: '）' + amount },
     ];
   }

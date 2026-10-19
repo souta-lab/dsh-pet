@@ -395,7 +395,7 @@ export function apply(ctx: any): void {
     // 一次查找同时给出"存在性"与"所属条目"（entry 即素材根，/chat 读记忆分桶要用）+ 条目配置
     // （/chat 取 chatMemoryRounds 要用）——调用方拿到的就是校验时那份快照里的值，不必再查一次。
     const found = findPetInstance(cfg(), petId);
-    if (!found) return fail('unknown-pet', '没有这只桌宠：' + petId);
+    if (!found) return fail('unknown-pet', 'ペットが見つかりません：' + petId);
     return { ok: true, petId, entry: found.entry, conf: found.conf };
   };
 
@@ -568,7 +568,7 @@ export function apply(ctx: any): void {
   const petSystemPrompt = (found: { conf: Record<string, unknown>; pet: Record<string, unknown> }): string => {
     const prompt = typeof found.conf.whisperPrompt === 'string' ? found.conf.whisperPrompt : '';
     const name = String(found.pet.name || found.pet.id);
-    const nameLine = '你的名字是“' + name + '”。';
+    const nameLine = 'あなたの名前は「' + name + '」です。返答は自然な日本語にしてください。';
     const base = prompt ? prompt + '\n' + nameLine : nameLine;
     const time = timeContextOf(new Date());
     return time ? base + '\n' + time : base;
@@ -599,7 +599,7 @@ export function apply(ctx: any): void {
     // 宠物在"校验那次读"（requirePet / resolveActivePetId / 周期调度各自读的那一份）与这里之间被删了
     // ——配置随时可能被设置页 / 右键菜单 / 手改文件改动，两次读之间就是窗口。
     // **明确失败：不生成、不写 S**。写下去就是一只已不存在宠物的幽灵叶子（/state 里常驻到进程重启）。
-    if (!found) return { ok: false, reason: 'unknown-pet', message: '没有这只桌宠：' + petId };
+    if (!found) return { ok: false, reason: 'unknown-pet', message: 'ペットが見つかりません：' + petId };
     const system = petSystemPrompt(found);
     // 配图：全局开关关闭 / 池为空 / 池内图片全缺失 → 纯文本（不报错，退化为原行为）
     const meme =
@@ -642,7 +642,7 @@ export function apply(ctx: any): void {
       // 跑完，窗口可能是**秒级**），所以这一支是真会命中的。
       // **明确失败：不生成、不写记忆也不写叶子**。否则会在 memory.json 里**永久**留下一个已删宠物的
       // 分桶，外加一只幽灵叶子（/state 里常驻到进程重启）。
-      if (!found) return { ok: false, reason: 'unknown-pet', message: '没有这只桌宠：' + petId };
+      if (!found) return { ok: false, reason: 'unknown-pet', message: 'ペットが見つかりません：' + petId };
       const rounds = memoryRounds(found.conf);
       // 人设：所属条目的 whisperPrompt（合并器已填默认）+ 名字声明（与碎碎念同一拼装）
       const system = petSystemPrompt(found);
@@ -1114,7 +1114,7 @@ export function apply(ctx: any): void {
       // 命中不到有两种可能：id 根本不存在，或该实例在合并时**因 id 与其它条目重复被跳过**（于是不在
       // 聚合里）。两种都只能按"没有这只桌宠"报——绝不能凭 id 去猜它"应该"属于哪个文件。
       const hit = findPetInstance(merged, petId);
-      if (!hit) return fail('unknown-pet', `没有这只桌宠：${petId}`);
+      if (!hit) return fail('unknown-pet', `ペットが見つかりません：${petId}`);
       // 目标层：main → 用户主配置；其余 → 文件宠物自己的配置（.json 或 .jsonc，定位统一走 ./config）
       let layerPath: string;
       let layerDir: string;
@@ -1728,13 +1728,17 @@ export function apply(ctx: any): void {
           const parsed = (JSON.parse(body ?? 'null') as Record<string, unknown> | null) ?? {};
           const text = typeof parsed.text === 'string' ? parsed.text.trim() : '';
           if (!text) {
-            return { kind: 'json', status: 200, obj: { ok: false, reason: 'bad-request', message: '消息为空' } };
+            return {
+              kind: 'json',
+              status: 200,
+              obj: { ok: false, reason: 'bad-request', message: 'メッセージが空です' },
+            };
           }
           if (text.length > 2000) {
             return {
               kind: 'json',
               status: 200,
-              obj: { ok: false, reason: 'bad-request', message: '消息过长（限 2000 字）' },
+              obj: { ok: false, reason: 'bad-request', message: 'メッセージは2000文字以内にしてください' },
             };
           }
           const result = await chatWithPet(petId, text);
@@ -2012,10 +2016,10 @@ export function apply(ctx: any): void {
     () =>
       ctx.commands.register({
         name: 'balance',
-        description: '手动触发桌宠余额显示（立即弹出余额气泡）',
+        description: 'ペットの残高表示を更新します',
         handler: () => {
           void refreshBalance(true); // manual：命令是用户主动敲的
-          return { kind: 'success', text: '已触发桌宠余额显示' };
+          return { kind: 'success', text: '残高表示を更新しました' };
         },
       }),
     'dsh-pet: /balance command',
@@ -2110,8 +2114,8 @@ export function apply(ctx: any): void {
     () =>
       ctx.commands.register({
         name: 'pet',
-        description: '选择桌宠（/chat 对话的目标；支持选择框或手输 id/名字）',
-        input: { hint: '[宠物 id 或名字]（留空查看当前）' },
+        description: 'チャット相手のペットを選びます（ID・名前でも指定可能）',
+        input: { hint: '[ペットのIDまたは名前]（空欄で現在の相手を表示）' },
         handler: ({ rawInput }: { rawInput: string }) => {
           const arg = rawInput.trim();
           let eff: Record<string, unknown>[];
@@ -2125,18 +2129,18 @@ export function apply(ctx: any): void {
             const found = eff.find((p) => String(p.id) === cur);
             return {
               kind: 'success',
-              text: '当前桌宠：' + (found ? petDisplayName(found) : cur || '（无可交互桌宠）'),
+              text: '現在のペット：' + (found ? petDisplayName(found) : cur || '（会話できるペットがいません）'),
             };
           }
           const byId = eff.find((p) => String(p.id) === arg);
           if (byId) {
             activePetId = String(byId.id);
-            return { kind: 'success', text: '已选择桌宠：' + petDisplayName(byId) };
+            return { kind: 'success', text: '選択したペット：' + petDisplayName(byId) };
           }
           const byName = eff.filter((p) => petDisplayName(p) === arg);
           if (byName.length === 1) {
             activePetId = String(byName[0].id);
-            return { kind: 'success', text: '已选择桌宠：' + petDisplayName(byName[0]) };
+            return { kind: 'success', text: '選択したペット：' + petDisplayName(byName[0]) };
           }
           if (byName.length > 1) {
             return {
@@ -2144,14 +2148,17 @@ export function apply(ctx: any): void {
               text:
                 '「' +
                 arg +
-                '」有 ' +
+                '」に一致するペットが ' +
                 byName.length +
-                ' 只桌宠（id：' +
+                '匹います（ID：' +
                 byName.map((p) => String(p.id)).join('、') +
-                '），请用 id 指定',
+                '）。IDで指定してください',
             };
           }
-          return { kind: 'error', text: '找不到桌宠「' + arg + '」（id 或名字都行；/pet 回车可打开选择框）' };
+          return {
+            kind: 'error',
+            text: 'ペットが見つかりません：「' + arg + '」（IDまたは名前で指定。/petで選択画面を開けます）',
+          };
         },
       }),
     'dsh-pet: /pet command',
@@ -2165,25 +2172,25 @@ export function apply(ctx: any): void {
     () =>
       ctx.commands.register({
         name: 'chat',
-        description: '与桌宠对话：留空 = 碎碎念一句；输入消息 = 正常对话',
-        input: { hint: '[消息]（留空 = 碎碎念）' },
+        description: 'ペットとチャットします。空欄ならひとりごとを話します',
+        input: { hint: '[メッセージ]（空欄でひとりごと）' },
         handler: ({ rawInput }: { rawInput: string }) => {
           const petId = resolveActivePetId();
-          if (!petId) return { kind: 'error', text: '没有可交互的桌宠' };
+          if (!petId) return { kind: 'error', text: '会話できるペットがいません' };
           const text = rawInput.trim();
           if (!text) {
             void publishWhisper(petId).catch((e: unknown) =>
               console.warn('[dsh-pet] 碎碎念异常：' + (e instanceof Error ? e.message : String(e))),
             );
-            return { kind: 'success', text: '已让桌宠碎碎念一句' };
+            return { kind: 'success', text: 'ペットにひとことお願いしました' };
           }
-          if (text.length > 2000) return { kind: 'error', text: '消息过长（限 2000 字）' };
+          if (text.length > 2000) return { kind: 'error', text: 'メッセージは2000文字以内にしてください' };
           void chatWithPet(petId, text).then((r) => {
             if (!r.ok) {
               console.warn('[dsh-pet] 对话失败 reason=' + r.reason + (r.message ? ' ' + r.message : ''));
             }
           });
-          return { kind: 'success', text: '已发送，桌宠马上回应' };
+          return { kind: 'success', text: '送信しました。ペットの返事をお待ちください' };
         },
       }),
     'dsh-pet: /chat command',
