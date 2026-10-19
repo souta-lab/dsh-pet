@@ -1,3 +1,5 @@
+> 日本語版：[生成プロンプト](notification-icons.ja.md)。以下は参照用の中国語原文です。
+
 # 系统通知图标 AI 生成提示词（6 张）
 
 > 用途：dsh-pet 系统通知的小图标（`notify-done/error/truncated/approval/question/test.png`），

@@ -1,307 +1,395 @@
-> **日本語版 0.3.7-ja.1** — 設定・通知・チャット・画像・文字入りアニメーションを日本語化しています。
-> 詳細は [日本語README](https://github.com/souta-lab/dsh-pet/blob/ja/README.ja.md) を参照してください。
+# dsh-pet 日本語版 🐾
 
-# dsh-pet 🐾
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)で動くデスクトップペットです。青髪の小さなメイドが、待機・散歩・食事・ゲームなどの透明アニメーションを再生します。クリックに反応し、ドラッグして投げると跳ね返ります。複数のペット、AIとの会話、ひとりごと、残高表示、作業状況との連動に対応しています。
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/dsh-pet"><img alt="npm version" src="https://img.shields.io/npm/v/dsh-pet?label=npm&color=blue"></a>
-  <a href="https://www.npmjs.com/package/dsh-pet"><img alt="npm monthly downloads" src="https://img.shields.io/npm/dm/dsh-pet?label=%E6%9C%88%E4%B8%8B%E8%BD%BD&color=brightgreen"></a>
-  <a href="https://www.npmjs.com/package/dsh-pet"><img alt="total downloads" src="https://img.shields.io/npm/dt/dsh-pet?label=%E6%80%BB%E4%B8%8B%E8%BD%BD&color=success"></a>
-  <a href="https://github.com/PC2005-cloud/dsh-pet"><img alt="stars" src="https://img.shields.io/github/stars/PC2005-cloud/dsh-pet?style=social"></a>
-  <a href="https://github.com/PC2005-cloud/dsh-pet/blob/main/LICENSE"><img alt="license" src="https://img.shields.io/github/license/PC2005-cloud/dsh-pet?color=orange"></a>
-  <a href="https://awesome-dsh-plugin.com"><img alt="awesome dsh plugin" src="https://awesome-dsh-plugin.com/badge.svg"></a>
-  <img alt="platform" src="https://img.shields.io/badge/platform-DeepSeek%20Harness%20Web-8A2BE2">
-  <img alt="assets" src="https://img.shields.io/badge/assets-dynamic%20animations-ff69b4">
-</p>
+原作者・元プロジェクト：[PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet)。このフォークの`ja`ブランチは日本語版です。設定画面、メニュー、通知、会話、画像内の文字、文字入り動画を日本語化しています。内部の設定キー・APIパス・アニメーションID・素材ファイル名は互換性のため元の表記を使います。
 
-> A floating desktop pet for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web UI: idle breathing, random actions (the 97 hand-drawn transparent animations — dozing off, playing with a Rubik's cube, writing code, hotpot…), turns, screen wandering, squash-and-stretch click reactions, throw-and-bounce drag physics, a right-click menu to play any action on demand, balance animations with a thinking bubble, **occasional self-talk and a chat dialog** (both can attach a meme image) — spawn as many pets as you want, live on your **desktop** (transparent always-on-top window), or add **brand-new pet species** (pet pack).
-> 一只住在 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 里的桌面宠物：待机呼吸、随机动作（打瞌睡、玩魔方、写代码、吃火锅……97 个手绘风透明动画随时无缝衔接）、左右转向、屏幕漫游、点击 Q 弹、拖拽甩抛反弹、右键菜单点播动作、余额动画 + 头顶联想气泡、**时不时的碎碎念与对话**（都能配一张表情包）——可多开同屏，能脱离浏览器住上**桌面**（透明置顶小窗），也能自己添加**全新宠物种类**（pet pack）。
+## インストール
 
----
+日本語版はこのブランチをビルドして使用します。npmの`dsh-pet`は上流版で、このフォークの日本語変更は含まれません。
 
-## 🚀 快速开始（安装插件）
-
-**桌面应用（Electron 版）**：在应用内「插件管理」页的安装框里填 `dsh-pet`，不用开终端；需要在终端里操作时，用桌面应用自带的那份 CLI。
-
-**`dsh web`**：
+Node.js 22.12以上と、使用できるDSH環境が必要です。上流が開発・検証に使用しているDSHのバージョンは`0.2.1-rc.2`です。
 
 ```sh
-dsh plugin --profile web add dsh-pet
+git clone --branch ja https://github.com/souta-lab/dsh-pet.git dsh-pet-ja
+cd dsh-pet-ja/dsh-pet
+npm install --ignore-scripts
+npm run build
 ```
 
-装完**重开桌面应用**（`dsh web` 用户则重启 `dsh web`）才生效。宠物出现在界面右上角（默认配置角落，可在设置页修改）——全部透明动画开箱即用，无需任何生成流程。
-
-> 💡 单一格式（默认 `.webm`）：浏览器 Chrome/Edge/Firefox 与桌面模式（Electron=Chromium）直接透明播放；Safari 不认 webm alpha（黑底），macOS 需要改用 `.mov`，见下方「🖥️ macOS 使用 mov」。
-
-> 💡 想自己造一只专属宠物？克隆 [PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet) 仓库，用内置素材链（AI 提示词 → 绿幕视频 → 透明动画，素材由豆包生成）从零生成，全流程可复现。
-
-> 💡 不想每次都开着 DSH？`npx dsh-pet-standalone` 可以**完全不打开 DSH** 让桌宠住在桌面上，见下方「🧍 独立运行（完全不打开 DSH）」。
-
-### 安装后你会看到什么
-
-默认 `display: "both"`（浏览器与桌面都显示），重开 DSH 后两处会依次出现，不必手动开：
-
-1. **浏览器端先出现**：宠物落在界面右上角（默认角落，设置页可改），此时桌面上还是空的。
-2. **宿主自动补桌面运行时**：本机没有 Electron 时会自己下载一份（落在 `~/.dsh/electron`，同一版本只下一次），进度直接打在 DSH 的控制台里（`[dsh-pet] Electron not found …` → `downloading …` → `download complete …`）。这一步在**后台**进行，浏览器里的宠物照常可用，等多久取决于网速。
-3. **桌面端随后出现**：解压完自动拉起桌面 Helper，同一只宠物以透明窗形式落到桌面上——**此时屏幕上一共两只**：浏览器里一只、桌面上那只，共用同一份配置与同一套动画。
-4. **想只留一只**：设置页选中该宠物 →「显示位置」下拉框（仅浏览器 / 仅桌面 / 两者都显示 / 都不显示）；或在宠物上**右键 →「显示位置」**子菜单直接切换，不用回设置页。
-
-> 已经装过 Electron（或设了 `DSH_PET_ELECTRON_PATH`）时第 2 步会跳过，桌面端几乎立刻出现；下载失败**只影响桌面模式**，浏览器里的宠物不受影响。探测顺序、手动触发与镜像/版本环境变量见下方「🪟 桌面模式（脱离浏览器，可选）」。
-
-## 🖥️ macOS 使用 mov（Safari 透明播放）
-
-macOS 的 Safari/WKWebView 下透明动画需用 `.mov` 素材，三步：
-
-1. **下载 mov 素材**：<https://github.com/PC2005-cloud/dsh-pet/releases/tag/assets-mov>（保持最新，zip 解压后文件名与 webm 一一对应）
-2. **放入素材目录**：把 `.mov` 文件放进 `$DSH_HOME/dsh-pet/main-animation/mov/`（pet pack 宠物则是 `pet/<种类名>-animation/mov/`）
-3. **改变量**：搜 `ANIMATION_EXT`，把 `.webm` 改为 `.mov`：
-   - npm 包用户改产物 `lib/client.js`（桌面端如需再改 `runtime/electron-helper/shared-core.js`）
-   - 自构建用户改源码 `src/shared/constants.ts` 后重新构建
-
-改完重启 `dsh web`（或重新加载页面）即生效，其余平台不受影响。
-
-## ✨ 功能特性
-
-- **纯粹的桌宠**：不掺业务功能——没有天气查询、系统监控、Agent 状态感知，就一件事：陪你（外加可选的余额展示、系统通知、碎碎念与对话，见配置节）。零核心改动；**默认零模型成本**——只有主动开启碎碎念（`pets[].whisperEnabled`）或主动发起对话时才会调用当前会话所用的模型，其余功能运行时零 LLM/API 调用
-- **手绘风透明动画**：待机呼吸、打瞌睡、玩魔方、哼歌、炸毛、吐泡泡、玩水枪、小提琴演奏、蓝鲸现世、吃白饭、照镜子、三支舞、写代码、四季动作（放风筝、堆雪人、吃冰淇淋、放烟花……）全部无缝衔接
-- **永不停止的动画链**：每段动画播完立即按权重选下一个（默认 idle 10 / turn 5 / move 5，剩余 80% 归随机动作分类）
-- **屏幕漫游**：朝 facing 方向行走，自动检查空间、不走出屏幕（多屏时默认可骑缝跨屏；设置页「锁定在当前屏幕」开启后只在当前所在那块屏内走）
-- **点击 / 拖拽（弹簧跟手 + 甩抛反弹 + Q 弹）**：点击有随机回应动画（开心 / 害羞 / 傲娇）并「**Q 弹**」挤压回弹（垂直压扁 55% → easeOutBack 回弹过冲，贴地锚定）；拖拽为**过阻尼弹簧跟手**（不抖不飘、无 overshoot）；松手按最后轨迹估速（停顿/慢速 = 温柔放下原地停住）——**用力甩出即沿抛物线飞行：撞屏幕边缘按恢复系数反弹、落地摩擦减速至停，每次落地按冲击速度 Q 弹（轻落 0.8 ~ 重砸 0.55）**；物理与挤压曲线纯函数在 `src/shared/physics.ts`，浏览器与桌面严格同一手感（`prefers-reduced-motion` 时跳过挤压）
-- **物理参数化（0.2.5）**：拖拽抛掷手感全部由配置 `physics` 段驱动——重力（`gravity`，**0 = 无重力漂浮**）/ 碰壁恢复系数（`restitution`）/ 地面摩擦（`groundFriction`，0 = 冰面）/ 顶部反弹开关（`ceilingBounce`）/ 总力度（`throwPower`）/ 多宠物碰撞开关（`petCollision`），所有宠物共用（**全局默认**：设置页改一次对含 pet pack 的全部宠物生效；种类文件顶层可覆盖，见配置节）；**设置页「物理」区可图形化编辑**（6 个控件，与四个全局开关同一套语义：改完点「保存」整包写入用户配置，非法值就地红字提示、宿主也会拒绝）
-- **点击积分（0.2.5）**：飞行中的宠物被**按下**（速度 ≥ 400px/s）→ 点击处爆开粒子 + 弹出积分卡片；分数 = 速度/100 × 462/大小（线性，越快/越小分越高——小宠物目标小、更难命中，奖励更高）；静止/慢速点击维持普通点击回应动画（`prefers-reduced-motion` 时跳过粒子）
-- **多宠物碰撞（0.2.5）**：`petCollision: true` 开启后，飞行中的宠物撞到其它宠物按**动量守恒 + 恢复系数 0.995** 弹开（质量 ∝ size²，被撞方从落点以新初速抛出去），浏览器与桌面跨窗口同语义（默认关闭）
-- **碎碎念**：宠物时不时自己冒一句——按 `eventsRefreshSec.whisper` 周期（默认 300 秒）调用当前会话所用的模型生成（人设 = **所属条目**的 `whisperPrompt`，每个种类一份，另追加一句名字声明），气泡展示 10 秒；右键菜单「碎碎念」可立即催一句（绕过节流，同一实例的多端一起看到）。**默认开启**，按宠物可关（`pets[].whisperEnabled`）
-- **对话**：右键「对话」弹窗跟宠物聊天，也能用 `/chat <消息>` 命令（留空 = 催一句碎碎念）——记忆持久化在 `$DSH_HOME/dsh-pet/memory.json`（**全存不删**，每次请求只带最近 `chatMemoryRounds` 轮），浏览器与桌面共享同一份记忆；对话目标为 `/pet` 选中的那只，未选则取列表第一只
-- **表情包配图（0.2.9）**：气泡可以带一张表情包——碎碎念**随机抽 1 张**（`whisperImageEnabled`：只是把这张图的描述加进同一次请求，约 +100 字符 / ≈60 token，增量可忽略）；对话把**整张清单**交给模型按语境选（`chatImageEnabled`：每条消息约 +1.1k 字符 / ≈650 token，约碎碎念配图的 11 倍，随图片数量线性增长）。图片与描述的映射在 `memes`（键 = 表情包目录里的 `<键>.png`；素材归属与动画同一套，见「高级自定义」），两个开关默认都开
-- **右键级联菜单**：右键宠物弹出（桌面与浏览器共用同一份组件，`src/shared/menu.ts`）——桌面端根项「**打开网站** / **查看余额** / **回到初始位置** / **重载配置** + **动作**」、浏览器端「**回到初始位置** + **动作**」；「打开网站」用**系统默认浏览器**打开 DSH 网站（等效网页里 Ctrl+点击链接）；「查看余额」立即拉余额弹气泡播档位动画（与周期触发同一展示路径）；「回到初始位置」停漫游回配置角落；「重载配置」（桌面专属）请宿主重启桌面 Helper——**全部桌面宠物窗口按最新配置重建**，改完配置文件不必回设置页点保存（与保存同一条重启路径：等旧进程退出再起新的；代价是会话内拖拽落点清空、回配置角落）；**动作 → 分类 → 具体动画**（分类 = 待机/转向/拖拽/点击回应/移动/随机动作分类/余额档位；**点播「移动」分类动画会真实行走一段**——边界检查/随机距离/起停时段与随机移动完全一致；noMirror 文字类朝右时自动强制朝左）——浏览器端只在宠物命中区拦截右键（`preventDefault`），完全不进入/改动 DSH 页面自己的菜单。**「打开网站」按宿主自动分派**：宿主是 DSH 桌面应用时该项自动变「**打开 DeepSeek Harness**」，用应用自注册的 `dsh://open` 协议把桌面应用主窗口唤到前台（已运行前置 / 未运行拉起）；`dsh web` 与独立模式仍是系统默认浏览器打开站点
-- **左右朝向**：所有动画 CSS 镜像，人物可朝左 / 朝右
-- **落地对齐**：动画统一脚底线，宠物始终站在"地面"上
-- **流畅切换**：双缓冲 video 交叉淡入，切换零空白帧
-- **无障碍友好**：支持 `prefers-reduced-motion`
-- **多开**：可配置多个宠物同屏，每只独立的 id/大小/位置/余额开关/显示位置（设置页「桌宠配置」添加/删除）
-- **桌面模式（可选）**：可脱离浏览器住上桌面——透明置顶局部小窗，与浏览器严格同行为（见下节）
-- **余额展示**：实时显示余额/额度，按档位播动画 + 头顶联想气泡，每只宠物可独立开关
-- **额外宠物种类（pet pack）**：在 `pet/` 自建「种类」（独立动画池 + 自己的素材），多实例共享，与主宠物严格隔离（见配置节）
-- **自定义动画**：`main-animation/webm/` 放 VP9-Alpha `.webm` 即作为新动画，优先于包内素材
-
-## 🪟 桌面模式（脱离浏览器，可选）
-
-默认情况下宠物住在 DSH 网页里（浏览器 overlay）。安装后还会**自动拉起一个脱离浏览器的桌面形态**：
-
-- **独立透明置顶窗口**：为**每只桌面宠物**各开一个**局部小窗口**（尺寸 = 宠物包围盒 + 四周外扩余量，为气泡/弹窗预留空间；透明、置顶、跳过任务栏），窗口跟随宠物移动；窗口**永不铺满屏幕**（全屏透明置顶窗会触发 Windows DWM 视频合成黑屏：需「透明置顶 + 非点击穿透 + 可聚焦且已聚焦 + 完整盖住视频窗」四项齐备，与窗口尺寸无关，详见 `runtime/electron-helper/main.js` 文件头注释；桌宠悬停时会翻成可交互、`show()` 也会聚焦，故全屏画布形态仍不做）。与浏览器一致，只有宠物**身体命中区**可交互，窗口内其余透明像素与窗口外一律**点击穿透**到下层应用（`setIgnoreMouseEvents` + 悬停命中翻转）
-- **与浏览器严格同行为**（同一份源码两个外壳）：宠物功能/文案完全对齐——多开宠物同屏显示、角落+边距定位、同一动画链/点击/拖拽/余额档位动画与富余额气泡；**页面配置的显示位置由 `display` 字段决定，两端宠物内容只可能一致，不会出现"一个有另一个没有"**。系统通知是独立于宠物的能力（见配置节 `notificationsEnabled`），不在此列
-- **共享纯逻辑**：待机选择 / 移动几何 / 余额折算 / 配置校验 / 通知映射都在 `src/shared/`，浏览器 bundle 与桌面 `shared-core.js`（构建产物，`window.PetShared`）共用同一份源码，只有最外层的渲染壳不同（React vs 纯 DOM）
-
-### 桌面模式怎么装 / 关
-
-- **插件安装**：桌面版在应用内「插件管理」页装 `dsh-pet`（见上方「快速开始（安装插件）」）
-- **依赖 Electron**：首次拉起时自动探测（`DSH_PET_ELECTRON_PATH` 环境变量 → 本机 electron 包 → `~/.dsh/electron/` 落地路径），找不到会通过官方 @electron/get 自动下载到 `~/.dsh/electron/`（`npm run ensure:electron` 可手动触发）；Electron 不可用时仅日志告警，**不影响浏览器形态**
-- **开关 = 每只宠物的 `display` 字段（pets 必填，四个值）**：
-  - `web` = 仅浏览器 overlay / `desktop` = 仅桌面模式 / `both` = 两者都显示 / `none` = 都不显示
-  - 桌面模式渲染 `display` 含 `desktop` 的**全部**宠物（多开同屏，与浏览器一致）；大小/位置各自读自己的配置
-  - 在 DSH 设置页「桌宠配置」编辑，保存即时生效；`display` 缺失/非法即配置错误，**代码不做兜底**
-- 桌面与浏览器是**同一套动画素材**（`/dsh-pet-7340/thumb/<前缀>/<name>.webm`：main 用用户 `main-animation/` 目录优先 + 包内素材；额外宠物只查自己的 `pet/<前缀>-animation/`，同种类多实例共享）；**配图（表情包）共用同一套素材归属**（`/dsh-pet-7340/pic/memes/<前缀>/<名>.png`：`pet/<前缀>-memes/` 独占 → 用户 `memes/` → 包内 `assets/memes/`）；配置加载失败会**大声报错**（红色错误条 + 每 5 秒自动重试），绝不静默兜底
-
-## 🧍 独立运行（完全不打开 DSH）
-
-上面的桌面形态由 DSH 宿主拉起。独立模式让它**不需要 DSH 在跑**：把插件自己的宿主半边
-（`src/host/index.ts` 的 `apply`）跑在一个最小的伪 ctx 上，再起一个本机 HTTP 服务接管路由 ——
-**路由表仍然只有插件那一份**（同一个 handler 同时服务 HTTP 与桌面助手的 bridge 管道）。
+`dsh web`では、ビルドした**内側のプラグインディレクトリ**を指定します。パスは実際の絶対パスに置き換えてください。
 
 ```sh
-npm install -g dsh-pet        # 必须 npm 装；dsh plugin add 装进 profile，bin 不在 PATH 上
-dsh-pet-standalone            # http://127.0.0.1:3080/dsh-pet-7340/（占用则顺延）
-dsh-pet-standalone --check    # 只体检
-dsh-pet-standalone --port 3100
-
-npm run build && npm run standalone   # 仓库里（先构建）
+dsh plugin --profile web add file:/absolute/path/to/dsh-pet-ja/dsh-pet
 ```
 
-- **能用**：动画链、点击/拖拽/甩抛、右键菜单、多开、自定义动画与表情包、pet pack。
-- **不可用**：余额、碎碎念、对话、系统通知——返回带 `reason` 的结构化失败，不假装成功。
-- **配置**：与 DSH 同一份（`$DSH_HOME/dsh-pet/main-config.jsonc` → 包内默认）。
-- **只显示 `display` 含 `desktop`/`both` 的实例**；端口默认 3080；`Ctrl+C` 或 `POST /shutdown` 退出。
-- **与 DSH 内运行可同时开**，但共用 `%APPDATA%\dsh-pet-electron-helper`，可能互相踩缓存（仅告警）。
+Windowsでの指定例は`file:D:/path/to/dsh-pet-ja/dsh-pet`です。Electron版DSHは、アプリ内の「プラグイン管理」からローカルのプラグインを指定します。CLIを使う場合は、そのデスクトップアプリに付属するCLIを使ってください。
 
-## ⌨️ 斜杠命令
+導入後はDSHを再起動します。ホスト側の変更には再起動が必要です。クライアント側だけの変更はページの再読み込みで反映できます。プラグインIDは`dsh-pet`のままなので、元版と同時には読み込まないでください。
 
-在 DSH 输入框里以 `/` 触发（与其它插件命令同一入口，命令面板可搜）：
+`npm run build`はクライアント・ホストに加え、デスクトップ共有コア、型宣言、配布ファイル一覧を生成します。`tsdown`だけでは完全なインストール用成果物になりません。`npm pack`・`npm publish`では`prepack`がビルドを実行します。日本語版の配布物を手元で作る場合は`npm pack`を使えます。
 
-| 命令               | 说明                                                                                                                                                                                       |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/pet [id 或名字]` | 选择「当前桌宠」——也就是 `/chat` 的对话目标。留空查看当前选中的是谁；浏览器端支持命令面板的选择框，也可手输 id 或名字（名字重名时必须用 id，报错会列出候选 id）                            |
-| `/chat [消息]`     | 与当前桌宠对话：**留空 = 立刻催一句碎碎念**（绕过节流，等价于右键菜单「碎碎念」）；输入消息 = 正常对话。回复会写进记忆，并以气泡出现在宠物头顶（浏览器与桌面两端都能看到，配图随回复一起） |
-| `/balance`         | 手动触发余额显示并立即弹出气泡（与到点自动触发同一条展示路径）：服务商有余额/额度接口 = 档位动画 + 余额气泡；未登记接口 / 缺凭证 / 抓取失败 = 文字说明气泡（绝不静默无反应）               |
+## 起動時の動作
 
-> 没选过 `/pet` 时，命令作用于**有效宠物列表的第一只**（列表 = `config.jsonc` 的 `pets` + `pet/` 目录的种类文件，同屏多开则按顺序取首只）。配图开关见配置节 `whisperImageEnabled` / `chatImageEnabled`。
+標準設定の`display`は`both`です。
 
-## ⚙️ 配置
+1. ブラウザーの右上にペットが表示されます。位置は設定画面から変更できます。
+2. Electronが見つからない場合、ホストが`$DSH_HOME/electron/`にダウンロードします。同じバージョンは再ダウンロードしません。進捗はDSHのコンソールに表示されます。
+3. 展開後、ペットごとに透明な最前面ウィンドウが開きます。ブラウザーとデスクトップに同じ設定のペットが1体ずつ表示されます。
+4. 片方だけにする場合は、設定画面または右クリックメニューの「表示場所」で変更します。
 
-| 配置项                         | 说明                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 设置页「桌宠配置」             | DSH 设置 → 桌宠配置：图形化编辑**大小 / 位置 / 边距**，支持**多开**（添加/删除宠物，每只独立配置）；全局开关也在设置页——系统通知（点保存才写入）、碎碎念配图 / 对话配图 / 锁定在当前屏幕（随「保存」一起写入）；保存**即时生效**，「同步」把项目内置的 `config.jsonc`（原文，含注释与全部高级字段）整份写入用户配置，既是恢复默认又留下一份可直接编辑的完整配置                                                       |
-| `pets`（config.jsonc）         | 默认宠物列表：`[{ "id", "name", "size", "balanceEnabled", "whisperEnabled", "workStatusEnabled", "display", "position": { "corner", "marginX", "marginY" } }]`；`display` 为 web/desktop/both/none（必填，缺失即配置错误）；`whisperEnabled` / `workStatusEnabled` = 碎碎念 / 工作状态气泡开关（默认：true）；多只即多开，`display` 含 desktop 的宠物出现在桌面窗口（与浏览器同屏渲染），首只为「添加宠物」的默认模板 |
-| `whisperPrompt`                | 碎碎念与对话共用的**人设系统提示词**（**条目级**：每个种类一份，种类文件顶层可覆盖）：默认「你是主人桌面上的Q版蓝发小女仆……20 字以内」；实际发出的 system = 它 + 一句「你的名字是“<宠物名>”。」                                                                                                                                                                                                                       |
-| `chatMemoryRounds`             | 每次对话请求携带的最近历史轮数（默认 5；1 轮 = 1 问 1 答；0 = 不带历史）：`memory.json` **全存不删**，此值只决定截取多少进上下文。**全局默认**（设置页「AI 模型与对话上下文」区一个数字输入框，改一次对所有宠物生效，含 pet pack；种类文件顶层可覆盖）                                                                                                                                                                |
-| `whisperModel` / `chatModel`   | 碎碎念 / 对话各自用哪个**服务商 + 模型**（**全局默认**：设置页改一次对所有宠物生效，含 pet pack；种类文件顶层可覆盖。设置页「AI 模型」每项一个下拉框，与 DSH 对话框右下角的模型选择器同款：搜索 + 按服务商分组的清单，选项同源）。`provider` 与 `model` **都留空 = 跟随当前对话的模型**（默认）；只填一半即配置错误。填了但调用失败（凭据被删 / 模型下架）会自动回落到当前对话的模型重试一次                          |
-| `whisperImageEnabled`（0.2.9） | 碎碎念配图开关（布尔，默认开；**全局默认**，pet pack 可在种类文件里覆盖）：开启后每次碎碎念从 `memes` 池**随机抽 1 张**，连同那句话一起显示。token：碎碎念本来就每次生成都要调一次模型，配图只多约 100 字符（≈60 token），增量可忽略                                                                                                                                                                                  |
-| `chatImageEnabled`（0.2.9）    | 对话配图开关（布尔，默认开；**全局默认**，pet pack 可在种类文件里覆盖）：开启后把**整张** `memes` 清单交给模型**按语境选 1 张**（可不选；选了池外名称视为没选，标记会原样留在正文里）。token：每条消息约 1.1k 字符（≈650 token），随图片数量线性增长                                                                                                                                                                  |
-| `chatImageLimit`               | 对话配图**张数上限**（非负整数，默认 10，0 = 不限制；**全局默认**，pet pack 可在种类文件里覆盖）：对话时只把 `memes` 清单的**前 N 张**（= 配置里写在前面的那 N 条，想优先发哪几张就往前写）交给模型选图。原因：整张清单是**每条消息都要附**的，token 随张数线性增长（27 张约 1.1k 字符 ≈ 650 token），限制成前 N 张即可给配图开销封顶。设置页「AI 模型与对话上下文」区可改。只影响对话选图——碎碎念只带抽中的那一张    |
-| `memes`（0.2.9）               | 表情包映射：键 = 表情包目录里的 `<键>.png` 文件名（不含扩展名），值 = 该图内容的简要描述（模型据此选图/配文）。图片按**素材归属**查找（种类独占 `pet/<前缀>-memes/` → 用户目录 `memes/` → 包内 `assets/memes/`，与动画同规矩）；配置里写了但哪个目录都没有该文件的条目**自动失效**（删图不必同步改配置）；删掉某个键即停用该图                                                                                        |
-| `notificationsEnabled`         | 系统通知总开关（布尔，默认开）：对话完成 / 生成失败 / 输出截断 / 权限申请 / 用户选择，在窗口失焦时弹系统级通知（桌面右下角）                                                                                                                                                                                                                                                                                          |
-| `physics`（0.2.5）             | 拖拽抛掷物理参数（**全局默认**，所有宠物共用；种类文件顶层可覆盖）：`gravity` 重力 / `restitution` 碰壁恢复系数（0~1）/ `groundFriction` 地面摩擦 / `ceilingBounce` 顶部反弹 / `throwPower` 总力度 / `petCollision` 多宠物碰撞开关；缺省取内置默认（1400 / 0.78 / 2.5 / true / 1.0 / false）；`gravity=0` 为无重力，`petCollision=true` 开启多宠物碰撞                                                                |
+ダウンロード中もブラウザー側は使用できます。Electronの導入に失敗した場合はデスクトップ側のみ影響します。Linuxで`DISPLAY`も`WAYLAND_DISPLAY`もない場合はデスクトップ表示をスキップします。
 
-> 说明：插件安装即用，配置均为可选；设置页保存的用户覆盖写入 `$DSH_HOME/dsh-pet/main-config.jsonc`（用户层，优先于包内默认）。
+## 主な機能
 
-### 📄 高级自定义（直接编辑配置文件）
+- **アニメーション**：待機・方向転換・移動・分類別のしぐさを重み付きで選び、二重バッファーで滑らかにつなぎます。
+- **複数のペット**：個別に名前・サイズ・位置・表示先を設定できます。追加種族のpet packにも対応します。
+- **操作**：クリックで反応、ドラッグで移動、投げると重力・壁の反発・床の摩擦を再現します。ゆっくり放せばその場に置けます。物理処理はブラウザーとデスクトップで共有しています。
+- **散歩**：向いている方向へ歩き、画面外へ出ないように移動します。複数画面、画面ごとの拡大率、作業領域に対応し、「現在の画面内に固定」も選べます。
+- **右クリックメニュー**：分類からアニメーションを再生し、ひとりごと・会話・初期位置への復帰・表示場所の変更を行えます。移動アニメーションを選ぶと実際に移動します。
+- **デスクトップ用メニュー**：サイトを開く、残高確認、設定再読み込みを利用できます。DSHデスクトップアプリでは`dsh://open`で本体を前面に表示し、Web版・単独モードでは既定のブラウザーで開きます。
+- **イベント連動**：残高・ひとりごと・作業状態に対応するアニメーションを再生します。各段階に候補配列を指定すると同じ動きの連続を避けて選びます。
+- **アクセシビリティー**：`prefers-reduced-motion`では弾む変形とフェードを省略します。
 
-用户数据统一收敛在 `$DSH_HOME/dsh-pet/`：
+## スラッシュコマンド
 
-| 层                   | 路径                                  | 作用                                                                                                  |
-| -------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| 默认配置（只读）     | 包内 `assets/config.jsonc`            | 完整结构参考：宠物列表 / 动画池（idle/turn/drag/clicks/moves/categories）/ 播放权重                   |
-| 用户配置             | `$DSH_HOME/dsh-pet/main-config.jsonc` | 覆盖片段：可整体覆盖 `pets` / `animations` / `animationWeights`，缺省字段回落默认                     |
-| 对话记忆（自动生成） | `$DSH_HOME/dsh-pet/memory.json`       | 对话历史（user/assistant 正文，**全存不删**；每次请求只取最近 `chatMemoryRounds` 轮）。删掉即清空记忆 |
-| 用户动画（可选）     | `$DSH_HOME/dsh-pet/main-animation/`   | 放入 `.webm`（VP9-Alpha）即可作为动画播放，**优先于包内素材**（放 `main-animation/webm/` 子目录）     |
-| 用户表情包（可选）   | `$DSH_HOME/dsh-pet/memes/`            | 放入 `.png` 即可作为配图，**优先于包内素材**；键（文件名去扩展名）与描述仍需写进配置的 `memes`        |
+DSHの入力欄で`/`から呼び出せます。
 
-- 设置页底部「高级配置」显示这些路径；「卸载与存储」列出插件的全部存储位置与卸载命令
-- 自定义动画：把 `xxx.webm` 放进 `main-animation/webm/`，在动画池/分类里写 `"xxx"`，**刷新页面**即可（无需重启 DSH）
-- 格式：`.webm` 需 **VP9 Alpha** 编码（Chrome/Edge/Firefox），与包内素材同规范，普通编码会有黑底
-- 修改用户配置后同样**刷新页面**生效
-- 动画名请对照默认配置填写，避免引用不存在的动画
-- 表情包图片按**素材归属**查找（与动画同一套）：`pet/<前缀>-memes/`（种类独占，见下节）→ 用户目录 `$DSH_HOME/dsh-pet/memes/` → 包内 `assets/memes/`。往用户目录放 `xxx.png`，再在 config 的 `memes` 里写 `"xxx": "这张图的描述"`，**刷新页面**即可用（加图/换图不必再改包内目录，也就不会被 `add`/更新覆盖）；只想去掉某张图，删 config 里对应的键即可（不用动图片文件）
+| コマンド              | 動作                                                                                                                       |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `/pet [idまたは名前]` | `/chat`の対象を選びます。引数なしで現在の選択を確認できます。同名の場合はidを指定してください。                            |
+| `/chat [メッセージ]`  | メッセージありで会話し、引数なしでひとりごとを即時生成します。返答は記憶に保存され、両画面の吹き出しに表示されます。       |
+| `/balance`            | 残高を即時更新します。利用可能なら段階別アニメーションと残高を表示し、未対応・認証情報不足・取得失敗なら理由を表示します。 |
 
-### 🐾 额外宠物（pet pack）——添加新「种类」
+`/pet`をまだ選んでいない場合は、有効なペット一覧の先頭を使用します。HTTP APIではこの既定値を使わず、対象を明示します。
 
-默认只能调整主宠物（`config.jsonc` / `main-config.jsonc` 的 `pets`）。要添加**全新种类的宠物**（独立动画池 + 自己的素材），在用户数据根下建 `pet/` 目录：
+## 残高・会話・作業状態
 
-```
-$DSH_HOME/dsh-pet/pet/
-├─ pig-config.json        ← 额外宠物 pig 的配置（命名词干 = 种类名，实例 id 任意）
-├─ pig-animation/         ← pig 自己的动画素材（直接平铺 .webm，仿 main-animation）
-│  ├─ 待机.webm
-│  └─ 打滚.webm
-└─ pig-memes/             ← 可选：pig 自己的表情包（直接平铺 .png，仿用户 memes/）
-   └─ 吃白饭的大肥鱼.png
-```
+### 残高
 
-每只额外宠物 = 一个 `-config.json`（配置）+ 一个 `-animation/` 目录（素材），同前缀配对，扫描 `pet/` 自动发现（浏览器与桌面同时生效，无需重启）；`-memes/` 目录可选，有则**独占**该种类的配图（见下节）。
+`eventsRefreshSec.balance`秒ごと（標準1800秒、起動時にも1回）に現在のプロバイダーを照会し、利用率に応じて6段階の動きと10秒間の吹き出しを表示します。`pets[].balanceEnabled`で個別に有効化できます。
 
-配置文件**与 `main-config.jsonc` / `config.jsonc` 完全同构**——直接复制一份 main 配置、换成自己的动画池，就是一只新宠物。一个 `-config.json` 定义**一个「种类」**（动画池 + 素材目录），`pets` 数组可放该种类的**任意多只实例**（每只独立 size/位置，共享动画池与素材）：
+| プロバイダーID      | 表示内容                                                          | 認証情報              |
+| ------------------- | ----------------------------------------------------------------- | --------------------- |
+| `deepseek-official` | アカウント残高。20元を基準に使用率へ換算します。                  | `DEEPSEEK_API_KEY`    |
+| `opencode-go`       | 5時間・週間・月間のうち最も残量の少ない枠とリセット時期。         | `OPENCODE_GO_API_KEY` |
+| `commandcode`       | 5時間・週間・月間のうち最も厳しい枠。窓制限のないプランは月間枠。 | `COMMANDCODE_API_KEY` |
 
-```jsonc
-// pet/pig-config.json —— 与 main-config.jsonc 同构的完整配置；animations / animationWeights 必填（不回落全局）
-{
-  "notificationsEnabled": true,
-  "pets": [
-    {
-      "id": "pig1", // 实例 id（可多只；不必等于文件名前缀）
-      "size": 420,
-      "balanceEnabled": true,
-      "display": "both", // web / desktop / both / none
-      "position": { "corner": "top-right", "marginX": 24, "marginY": 100 },
-    },
-    {
-      "id": "pig2",
-      "size": 360,
-      "balanceEnabled": false,
-      "display": "web",
-      "position": { "corner": "top-left", "marginX": 24, "marginY": 100 },
-    },
-  ],
-  "animations": {
-    "idle": ["待机"],
-    "turn": [],
-    "drag": [],
-    "clicks": ["打滚"],
-    "moves": { "default": { "minDist": 80, "maxDist": 360, "margin": 20, "leadSec": 2, "tailSec": 2 }, "actions": [] },
-    "categories": [],
-    "events": {
-      "balance": ["余额-钱袋满溢", "余额-金袋叮当", "余额-钱袋如常", "余额-数金皱眉", "余额-袋空如洗", "余额-分文不剩"],
-    },
-  },
-  "animationWeights": { "idle": 80, "turn": 0, "move": 0 },
-  "eventsRefreshSec": { "balance": 1800 },
-}
-```
+キーはDSHの認証情報に設定します。未対応のプロバイダーや取得エラーでは説明を表示します。自動照会では理由が変化したときだけ表示し、手動照会では毎回表示します。
 
-规则（与主宠物严格隔离，绝不混用）：
+### ひとりごとと会話
 
-- **素材只查自己的**：素材目录名 = 文件名前缀（`pet/pig-config.json` → `pet/pig-animation/`），该种类所有实例共用；动画 URL 为 `/thumb/<前缀>/<名>.webm`，查不到即 404 报错——**绝不落到 `main-animation` 或包内素材**。配图同理：`pet/<前缀>-memes/` 存在时**只查它**（`/pic/memes/<前缀>/<名>.png` 查不到即 404），绝不回落到用户 `memes/` 或包内 `assets/memes/`
-- **动画池不回落全局**：`animations` / `animationWeights` 是该种类的（结构校验与主配置同一套规则）
-- `pets` 数组非空、每只字段（id/size/balanceEnabled/display/position）完整合法、数组内 id 唯一——**id 随意写、数量随意**，与主配置完全一致
-- **用户层的「全局默认」会生效**：`physics` / `confineToScreen` / `whisperImageEnabled` / `chatImageEnabled` / `chatImageLimit` / `chatMemoryRounds` / `whisperModel` / `chatModel` / `eventsRefreshSec` 这 9 个是**用户级成本 / 偏好 / 环境 / 节奏**参数——用户在设置页（写进 `main-config.jsonc`）改一次就对该种类生效；种类文件顶层写了则用自己那份
-- **所有顶层字段都是整段替换**：写了就整段用自己的，缺的子键不会从内置默认补回来（消费端各自兜底：余额周期读不到按 1800、碎碎念按 300）
-- `notificationsEnabled` 是**全局**（只读 `main` 条目那份）：种类文件里写了**不生效**（不报错）
-- `eventsRefreshSec` 内部两个键的**消费端**不同：`.whisper` 按宠物所属条目读（种类文件顶层可覆盖）；`.balance` 只读 `main` 条目（余额是一个账号一份数据，host 只有一个刷新定时器）
-- 配置非法 / 缺少 `-animation/` 目录 / 实例 id 与主宠物冲突 → 加载时显式报错并跳过该宠物（不影响其他宠物）
-- 设置页**不列出**文件宠物（改文件即生效，刷新可见）；设置页保存/同步不会把它们写进 `main-config.jsonc`
-- 添加/修改/删除 → 刷新页面（浏览器）或重启 Helper（桌面）生效
+`whisperEnabled`を有効にすると、`eventsRefreshSec.whisper`秒ごと（標準300秒）に1文生成します。周期はペットごとに独立しています。手動のひとりごとは自動生成の設定に関係なく利用できます。
 
-## 🗑️ 卸载
+`whisperPrompt`はひとりごとと会話に共通する人格設定です。日本語版の標準設定は日本語で返答するよう指定しています。既存のユーザー設定に中国語の`whisperPrompt`や`workStatusTexts`がある場合は、その内容が優先されるため、項目を日本語に変更するか、該当する上書き項目を削除してください。
+
+`whisperModel`と`chatModel`でプロバイダーとモデルを個別に指定できます。両方空欄なら現在のDSH会話のモデルを使用します。片方だけの指定は無効です。指定モデルで失敗した場合は現在の会話のモデルで1回再試行します。
+
+会話履歴は`$DSH_HOME/dsh-pet/memory.json`にすべて保存され、ブラウザーとデスクトップで共有します。`chatMemoryRounds`はリクエストに含める直近の往復数（標準5、0で履歴なし）で、保存済み履歴を削除する設定ではありません。
+
+ひとりごとの画像は`memes`からランダムに1枚、会話の画像はモデルが文脈に応じて最大1枚選びます。`whisperImageEnabled`・`chatImageEnabled`で切り替えられます。`chatImageLimit`（標準10、0で無制限）はモデルへ渡す候補を設定順の先頭N枚に制限します。候補一覧は各メッセージに付くため、画像が増えるほどトークン消費も増えます。
+
+### 作業状態と通知
+
+`workStatusEnabled`を有効にすると、DSHのイベントに応じて思考・作業・整理・待機・成功・エラーの6状態を表示します。通常状態はアニメーションと吹き出しを維持し、成功・エラーは1回再生して10秒で吹き出しを閉じます。複数ターンのタスクは最後の完了時に祝います。
+
+`animations.events.workStatus`の添字が状態を表すため、既存の配列の途中には新しい状態を挿入しないでください。`workStatusTexts`は状態ごとに複数の候補を指定でき、タスク詳細がある場合はそちらを優先します。
+
+`notificationsEnabled`を有効にすると、ウィンドウにフォーカスがないときに、会話完了・生成失敗・出力打ち切り・権限確認・回答待ちをOS通知で知らせます。
+
+## 設定とデータ
+
+DSHの設定にある「ペット設定」で編集して保存すると即時反映されます。サイズは横幅pxで、高さは幅の9/16です。位置は四隅と`marginX`・`marginY`で指定します。
+
+| `display` | 表示先       |
+| --------- | ------------ |
+| `web`     | ブラウザー   |
+| `desktop` | デスクトップ |
+| `both`    | 両方         |
+| `none`    | 非表示       |
+
+「初期設定を同期」は、コメントと高度な設定を含む内蔵`config.jsonc`をユーザー設定へ**丸ごとコピー**します。既存の調整も上書きするため、必要な内容を先にバックアップしてください。
+
+| パス                                     | 内容                                                |
+| ---------------------------------------- | --------------------------------------------------- |
+| パッケージの`assets/config.jsonc`        | 読み取り専用の標準設定。全項目の構造と説明。        |
+| `$DSH_HOME/dsh-pet/main-config.jsonc`    | ユーザー設定。標準設定より優先。                    |
+| `$DSH_HOME/dsh-pet/memory.json`          | 会話履歴。削除すると記憶を消去。                    |
+| `$DSH_HOME/dsh-pet/main-animation/webm/` | ユーザーのVP9-Alpha動画。パッケージ内素材より優先。 |
+| `$DSH_HOME/dsh-pet/memes/`               | ユーザーのPNG画像。`memes`に名前と説明を登録。      |
+| `$DSH_HOME/dsh-pet/pet/`                 | 追加種族の設定と素材。                              |
+
+**トップレベルのフィールドは一括置換です。** たとえば`animations`を指定すると、そのオブジェクト全体で標準のプールを置き換えます。内部の省略キーは標準設定から補完されません。トップレベル自体を省略した項目は既定値を使います。不正な設定は警告とともに扱われます。詳細は設定ファイル内のコメントを参照してください。
+
+主な編集項目は`pets`、`animations`、`animationWeights`、`eventsRefreshSec`、`whisperPrompt`、`memes`です。物理設定`physics`の既定値は、`gravity: 1400`、`restitution: 0.78`、`groundFriction: 2.5`、`ceilingBounce: true`、`throwPower: 1`、`petCollision: false`。重力0で無重力、`petCollision: true`でペット同士の衝突を有効にします。
+
+`fixedEnabled`は自動の方向転換と移動だけを止めます。クリック・ドラッグ・手動再生・イベントには影響しません。`font`ではフォントのプリセット、文字サイズ、ペットサイズとの連動を設定できます。設定ファイルを直接編集した場合はページの再読み込み、デスクトップの設定再読み込み、必要に応じてHelperの再起動を行ってください。
+
+### 追加種族（pet pack）
+
+`pet/pig-config.json`と`pet/pig-animation/`のように、同じ接頭辞の設定と素材を配置します。`pig-memes/`は任意です。設定は標準設定と同じ構造で、`pets`に複数のインスタンスを指定できます。ファイル名の接頭辞は種族名、各`pets[].id`は一意のインスタンスIDです。
+
+- `animations`と`animationWeights`を種族ごとに指定します。主ペットのアニメーションにはフォールバックしません。
+- `pig-animation/`の動画はこの種族だけで使用します。見つからない場合は404になります。種族用の`pig-memes/`がある場合、画像もそのディレクトリだけを検索します。ない場合はユーザーの`memes/`、パッケージ素材を使用します。
+- `pets`は空でない配列にし、各インスタンスの必須フィールドを指定してください。IDが主ペットや他の種族と衝突する場合、その種族は警告してスキップします。
+- ユーザーの全体設定で指定した物理・フォント・画面制限・モデル・画像・履歴・周期は種族にも適用され、種族側のトップレベル指定で上書きできます。
+- `notificationsEnabled`と残高の更新周期`eventsRefreshSec.balance`はmainだけを読みます。ひとりごとの周期は種族ごとに上書きできます。
+- ファイルで追加したペットは設定画面の一覧に含まれず、保存・同期で主設定に書き戻されません。変更後はブラウザーを再読み込みし、デスクトップはHelperを再起動してください。
+
+新しい種族を作るときは`assets/config.jsonc`をコピーし、インスタンスID、アニメーションプール、素材名を変更するのが確実です。動画名はプールに書いたIDと拡張子を除いて一致させます。通常の不透明WebMでは背景が黒くなるため、VP9-Alphaを使ってください。
+
+## デスクトップと単独モード
+
+デスクトップではペットごとに小さな透明の最前面ウィンドウを作り、ブラウザーと同じロジック・素材を使用します。ホストとの通信は専用のプロセス間チャネルです。
 
 ```sh
-# dsh web：--profile 填 web
+# パッケージディレクトリでElectronを手動取得
+npm run ensure:electron
+# デスクトップのみをデバッグ
+npm run start:desktop -- http://127.0.0.1:3080/dsh-pet-7340/config
+# DSHを起動せず実行（先にビルド）
+npm run standalone
+```
+
+Electronは`DSH_PET_ELECTRON_PATH`で実行ファイルを指定できます。ダウンロード先の変更は`DSH_PET_ELECTRON_MIRROR`、バージョン指定は`DSH_PET_ELECTRON_VERSION`を使い、変更後に再起動してください。
+
+単独モードの実行ファイルは`dsh-pet-standalone`です。`--check`で診断、`--port 3100`でポートを指定できます。標準ポートは3080で、使用中なら次へ進みます。`display`が`desktop`または`both`のインスタンスを表示し、`Ctrl+C`または`POST /shutdown`で終了します。
+
+単独モードではアニメーション、操作、複数表示、独自素材、pet packを利用できます。DSHに依存する残高・ひとりごと・会話・システム通知は利用できず、APIは理由付きの失敗を返します。設定はDSH内で実行する場合と共通です。同時起動ではElectron Helperのキャッシュも共有するため、干渉する可能性があります。
+
+## 対応環境とmacOS
+
+Windows・Linux・macOSに対応します。標準のVP9-Alpha WebMはChrome・Edge・FirefoxとElectronで透過再生できます。Safari/WKWebViewはWebMのアルファを扱えないため、HEVC-with-AlphaのMOVを使用します。
+
+1. 上流の[assets-movリリース](https://github.com/PC2005-cloud/dsh-pet/releases/tag/assets-mov)から素材を取得します。
+2. 主ペットは`$DSH_HOME/dsh-pet/main-animation/mov/`、追加種族は`pet/<種族>-animation/mov/`に置きます。
+3. ソースの`src/shared/constants.ts`にある`ANIMATION_EXT`を`.mov`へ変更して再ビルドします。配布済み成果物を編集する場合は`lib/client.js`、デスクトップ側は`runtime/electron-helper/shared-core.js`も対象です。
+
+ホストのルートは`webm`と`mov`の両方を処理できます。上流のMOV素材には、このフォークで行った日本語の動画編集は含まれません。日本語動画をMOVで使うには、編集済みWebMから別途アルファ付きで変換してください。
+
+## HTTP API
+
+他のプラグインやスクリプトから発話・アニメーション・位置・投擲・占有ロックを操作できます。状態は`GET /dsh-pet-7340/state`から取得します。対象指定が必要なAPIでは`pet`を省略できません。
+
+- [API一覧](https://github.com/souta-lab/dsh-pet/blob/ja/API.md)
+- [OpenAPI 3.1仕様](https://github.com/souta-lab/dsh-pet/blob/ja/openapi.yaml)：Swagger UIやPostmanへインポートできます。
+- [APIテスト用コンソール](https://github.com/souta-lab/dsh-pet/blob/ja/tools/api-tester.html)：リポジトリのルートで`node tools/api-tester.cjs`を実行します。
+
+ルートはDSHのWebサービスに登録されます。`7340`はパスの一部で、ポート番号ではありません。サービスは127.0.0.1で待ち受け、認証はありません。元のAPI仕様に従い、公開ネットワークへ転送しないでください。
+
+## アンインストール
+
+Web版は次のコマンド、デスクトップアプリは「プラグイン管理」を使います。
+
+```sh
 dsh plugin --profile web remove dsh-pet
 ```
 
-桌面应用（Electron 版）在应用内「插件管理」页卸载。
+保存先は設定画面の「アンインストールと保存先」で確認できます。削除前にDSHとペットを終了してください。
 
-插件在本机落下的全部位置（设置页「卸载与存储」区块也列出这些，且路径按你的机器实时解析）：
+| 保存先                                        | 内容                                                                                                           |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `$DSH_HOME/dsh-pet/`                          | 設定・会話履歴・独自素材・追加種族。削除すると失われます。                                                     |
+| `$DSH_HOME/electron/`                         | Electron本体。再利用時に再取得されます。                                                                       |
+| Windowsの`%APPDATA%/dsh-pet-electron-helper/` | Helperのキャッシュ。macOSは`~/Library/Application Support/`、Linuxは`$XDG_CONFIG_HOME`または`~/.config/`配下。 |
+| Windowsの`%LOCALAPPDATA%/electron/Cache/`     | ダウンロードキャッシュ。macOSは`~/Library/Caches/electron`、Linuxは`$XDG_CACHE_HOME`または`~/.cache/`配下。    |
 
-- `$DSH_HOME/dsh-pet/` —— 插件用户数据：自定义配置 `main-config.jsonc`、对话记忆 `memory.json`、自定义动画素材 `main-animation/`、自定义表情包 `memes/`、文件宠物 `pet/`
-- `$DSH_HOME/electron/` —— 桌面宠物用的 Electron 运行时（体积较大；删除后下次启用桌面模式会自动重新下载）
-- `%APPDATA%\dsh-pet-electron-helper\` —— 桌面宠物窗口缓存与主屏缩放缓存（macOS：`~/Library/Application Support/`；Linux：`$XDG_CONFIG_HOME` 或 `~/.config/`；可删，会自动重建）
-- `%LOCALAPPDATA%\electron\Cache\` —— Electron 安装包下载缓存（macOS：`~/Library/Caches/electron`；Linux：`$XDG_CACHE_HOME` 或 `~/.cache/`；可删，需要时会重新下载）
-- 插件本体 —— 由 DSH 管理，用上面的命令移除，不要手删
+プラグイン本体はDSHに管理させてください。設定・記憶を残す場合はユーザーデータをバックアップします。
 
-删之前先退出 DSH（桌面宠物随之退出）。缓存类删了无影响；`$DSH_HOME/dsh-pet/` 删了会丢配置与对话记忆（想保留就先备份 `main-config.jsonc`）。
+## 開発と検証
 
-## 🖥️ 运行效果
+パッケージディレクトリ`dsh-pet/`で実行します。
 
-宠物实际运行在 DSH Web 界面中的样子：
-
-<p>
-  <img src="https://raw.githubusercontent.com/PC2005-cloud/dsh-pet/main/assets/screenshots/dsh-pet-running-1.png" width="380" alt="dsh-pet running in DSH Web UI 1" title="dsh-pet running in DSH Web UI 1">
-  <img src="https://raw.githubusercontent.com/PC2005-cloud/dsh-pet/main/assets/screenshots/dsh-pet-running-2.png" width="380" alt="dsh-pet running in DSH Web UI 2" title="dsh-pet running in DSH Web UI 2">
-  <img src="https://raw.githubusercontent.com/PC2005-cloud/dsh-pet/main/assets/screenshots/dsh-pet-running-7.png" width="380" alt="dsh-pet running in DSH Web UI 7" title="dsh-pet running in DSH Web UI 7">
-  <img src="https://raw.githubusercontent.com/PC2005-cloud/dsh-pet/main/assets/screenshots/dsh-pet-running-8.png" width="380" alt="dsh-pet running in DSH Web UI 8" title="dsh-pet running in DSH Web UI 8">
-</p>
-
-## 🎬 效果预览
-
-> 动画为透明背景；GIF 预览中透明部分显示为页面底色，实际播放为透明。
-
-<p>
-  <img src="https://raw.githubusercontent.com/PC2005-cloud/dsh-pet/main/dsh-pet/assets/preview/daiji-huxi-xiuxian.gif" width="160" alt="待机呼吸休闲" title="待机呼吸休闲">
-  <img src="https://raw.githubusercontent.com/PC2005-cloud/dsh-pet/main/dsh-pet/assets/preview/dongzhangxiwang.gif" width="160" alt="东张西望" title="东张西望">
-  <img src="https://raw.githubusercontent.com/PC2005-cloud/dsh-pet/main/dsh-pet/assets/preview/yuandi-piaofu-tabu.gif" width="160" alt="原地漂浮踏步" title="原地漂浮踏步">
-  <img src="https://raw.githubusercontent.com/PC2005-cloud/dsh-pet/main/dsh-pet/assets/preview/yuandi-xiaoqi-chenmian.gif" width="160" alt="原地小憩沉眠" title="原地小憩沉眠">
-  <img src="https://raw.githubusercontent.com/PC2005-cloud/dsh-pet/main/dsh-pet/assets/preview/dianji-huiying-kaixin-yuedong.gif" width="160" alt="点击回应 - 开心跃动" title="点击回应 - 开心跃动">
-  <img src="https://raw.githubusercontent.com/PC2005-cloud/dsh-pet/main/dsh-pet/assets/preview/beishubiao-tuozhuai-xuankong-fankui.gif" width="160" alt="被鼠标拖拽悬空反馈" title="被鼠标拖拽悬空反馈">
-</p>
-
-全部动画见仓库：`dsh-pet/assets/webm/`（VP9-alpha，唯一发布格式）。
-
-## 📚 完整项目（不止是插件）
-
-这是**完整的三件套项目**，任何人 clone 仓库都可以从零生成自己的桌面宠物：
-
-```
-① 提示词（配方）    →  ② 素材生成链（引擎）  →  ③ 插件（成品）
-AI 生成动画的配方     源视频 → 透明动画的管线    运行在 DSH 里的宠物
+```sh
+npm run build
+npm run typecheck
+npm test
+npm run lint
+npm run check:openapi
 ```
 
-- 仓库：[PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet)
-- 素材生成提示词：[prompts/](https://github.com/PC2005-cloud/dsh-pet/tree/main/prompts)（10 秒动作提示词 + 系统通知图标提示词，可直接喂给豆包）
+ブラウザーテストは[テスト手順](https://github.com/souta-lab/dsh-pet/blob/ja/dsh-pet/scripts/tests/README.md)を参照してください。日本語表示は360・520・900pxで確認しています。元画像・動画の編集範囲と検証記録は`localization/`にあります。
 
-## 🔎 发现更多 DSH 插件
+## ライセンスと原作者表記
 
-- 社区插件目录：[awesome-dsh-plugin.com](https://awesome-dsh-plugin.com)
-- DSH 官方仓库：[deepseek-ai/DeepSeek-Harness](https://github.com/deepseek-ai/deepseek-harness)
+- コード：MIT。`LICENSE`を参照してください。
+- アニメーション・生成プロンプト・元動画：上流の利用条件ではオープンソースでの使用を許可し、**商用利用は禁止**されています。
+- 派生版・改変版・外観変更版を紹介・展示・配布する場所には、原作者のGitHub URLを表示する必要があります：[PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet)。
 
-## 📄 许可
+不具合報告にはプラグインとDSHのバージョン、OS、再現手順、必要に応じてログ・スクリーンショットを添えてください。上流のmainにある修正がnpmの最新版に含まれていない場合もあります。
 
-- 代码：MIT
-- 素材（动画/提示词/源视频）：允许开源使用，**禁止商用**
+## アニメーションのプレビュー
+
+640×360の動画から作成したGIFです。再生用の透過WebMは`https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/webm/`にあります。
+
+**待機・方向転換**
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/daiji-huxi-xiuxian.gif" width="160" alt="のんびり待機" title="のんびり待機">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/dongzhangxiwang.gif" width="160" alt="きょろきょろ" title="きょろきょろ">
+</p>
+
+**移動**
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/pangxie-zoulu.gif" width="160" alt="カニ歩き" title="カニ歩き">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/yuandi-piaofu-tabu.gif" width="160" alt="ふわふわ足踏み" title="ふわふわ足踏み">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/yuandi-zuozhuan-benpao.gif" width="160" alt="左に走る" title="左に走る">
+</p>
+
+**しぐさ**
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/youxian-hengga.gif" width="160" alt="鼻歌" title="鼻歌">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chaoda-shenlanyao.gif" width="160" alt="大きく伸びる" title="大きく伸びる">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/yuandi-qiaoji-zhuomian-hudong.gif" width="160" alt="机をとんとん" title="机をとんとん">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/yuandi-zhongli-xiadun-yasuo.gif" width="160" alt="しゃがむ" title="しゃがむ">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/haqian-liantian.gif" width="160" alt="あくび" title="あくび">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/yuandi-xiaoqi-chenmian.gif" width="160" alt="ひと眠り" title="ひと眠り">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/nvpu-quxi-liyi.gif" width="160" alt="メイドのお辞儀" title="メイドのお辞儀">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/beixiayitiao-zhamao.gif" width="160" alt="びっくり" title="びっくり">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/xiaofudu-yuandi-360du-xuanzhuan-zhanshi.gif" width="160" alt="くるっと一回転" title="くるっと一回転">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/touchi-lingshi-bei-zhuazhu.gif" width="160" alt="つまみ食いがばれた" title="つまみ食いがばれた">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/yong-jingyu-weiba-paidadi.gif" width="160" alt="しっぽで床をたたく" title="しっぽで床をたたく">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/da-keshui-bei-jingxing.gif" width="160" alt="居眠りからはっと起きる" title="居眠りからはっと起きる">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/zhao-jingzi.gif" width="160" alt="鏡を見る" title="鏡を見る">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/zhengti-huanzhuang-shise.gif" width="160" alt="着せ替え" title="着せ替え">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/qingkuai-jilu.gif" width="160" alt="メモする" title="メモする">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/xie-daima.gif" width="160" alt="コードを書く" title="コードを書く">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/yaoshan-naliang.gif" width="160" alt="うちわで涼む" title="うちわで涼む">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chenjian-shuaya.gif" width="160" alt="朝の歯磨き" title="朝の歯磨き">
+</p>
+
+**遊び**
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/yuandi-zhuanxin-wan-mofang.gif" width="160" alt="ルービックキューブ" title="ルービックキューブ">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/yuandi-dunxia-wan-wanju-qiche.gif" width="160" alt="ミニカーで遊ぶ" title="ミニカーで遊ぶ">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/jingyu-tu-paopao-texiao.gif" width="160" alt="クジラの泡" title="クジラの泡">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/yuandi-tiaoyue-zhuasui-touding-wupin.gif" width="160" alt="ジャンプでキャッチ" title="ジャンプでキャッチ">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/wan-youxi-qijibaituai.gif" width="160" alt="ゲームでむきになる" title="ゲームでむきになる">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/wan-shuiqiang.gif" width="160" alt="水鉄砲" title="水鉄砲">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/xiaotiqin-yanzou.gif" width="160" alt="バイオリン" title="バイオリン">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/lanjing-xianshi.gif" width="160" alt="シロナガスクジラ登場" title="シロナガスクジラ登場">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/youya-nvpuwu.gif" width="160" alt="優雅なメイドダンス" title="優雅なメイドダンス">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/qingkuai-yaobaiwu.gif" width="160" alt="軽快なダンス" title="軽快なダンス">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/keai-zhaiwu.gif" width="160" alt="かわいいダンス" title="かわいいダンス">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chui-qiqiu.gif" width="160" alt="風船をふくらませる" title="風船をふくらませる">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/dongwu-huanrao.gif" width="160" alt="動物に囲まれる" title="動物に囲まれる">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/fang-fengzheng.gif" width="160" alt="たこあげ" title="たこあげ">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chai-liwu.gif" width="160" alt="プレゼントを開ける" title="プレゼントを開ける">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/bian-gezi.gif" width="160" alt="ハトを出す" title="ハトを出す">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/puke-moshu.gif" width="160" alt="トランプマジック" title="トランプマジック">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chou-tuoluo.gif" width="160" alt="こま回し" title="こま回し">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chui-dizi.gif" width="160" alt="笛を吹く" title="笛を吹く">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/hudie-mifeng-huanrao-touding-kaihua.gif" width="160" alt="蝶と蜂とお花" title="蝶と蜂とお花">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/lu-mao.gif" width="160" alt="猫をなでる" title="猫をなでる">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/pingkong-shenghua.gif" width="160" alt="花を出す" title="花を出す">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/qi-muma.gif" width="160" alt="木馬" title="木馬">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/sanqiu-paojie.gif" width="160" alt="ジャグリング" title="ジャグリング">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/ti-jianzi.gif" width="160" alt="羽根蹴り" title="羽根蹴り">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/xiawuziqi.gif" width="160" alt="五目並べ" title="五目並べ">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/dangqiuqian.gif" width="160" alt="ブランコ" title="ブランコ">
+</p>
+
+**食べもの**
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-baifan.gif" width="160" alt="白ごはん" title="白ごはん">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/dakou-chi-lingshi.gif" width="160" alt="おやつをほおばる" title="おやつをほおばる">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-token.gif" width="160" alt="トークンを食べる" title="トークンを食べる">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-zaocan.gif" width="160" alt="朝ごはん" title="朝ごはん">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-wucan.gif" width="160" alt="お昼ごはん" title="お昼ごはん">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-wancan.gif" width="160" alt="晩ごはん" title="晩ごはん">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-bingqilin-ronghua.gif" width="160" alt="とけるアイス" title="とけるアイス">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-dazhaxie.gif" width="160" alt="カニを食べる" title="カニを食べる">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-tanghulu.gif" width="160" alt="タンフールー" title="タンフールー">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-changshoumian.gif" width="160" alt="長寿麺" title="長寿麺">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-xigua.gif" width="160" alt="スイカ" title="スイカ">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/shuan-huoguo.gif" width="160" alt="火鍋" title="火鍋">
+</p>
+
+**季節**
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/beiluoye-yanmo.gif" width="160" alt="落ち葉に埋もれる" title="落ち葉に埋もれる">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/zhongqiu-shangyue-chi-yuebing.gif" width="160" alt="お月見と月餅" title="お月見と月餅">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/duixueren.gif" width="160" alt="雪だるま" title="雪だるま">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/fang-yanhua.gif" width="160" alt="花火" title="花火">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-zongzi.gif" width="160" alt="ちまき" title="ちまき">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-niangao.gif" width="160" alt="おもち" title="おもち">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-qingtuan.gif" width="160" alt="草だんご" title="草だんご">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-labazhou.gif" width="160" alt="臘八粥" title="臘八粥">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chi-chongyanggao.gif" width="160" alt="重陽のお菓子" title="重陽のお菓子">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/shou-hongbao.gif" width="160" alt="お年玉" title="お年玉">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/xie-fuzi.gif" width="160" alt="福の書き初め" title="福の書き初め">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chuanzhenqiqiao.gif" width="160" alt="七夕の針仕事" title="七夕の針仕事">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/wu-shitou.gif" width="160" alt="獅子舞" title="獅子舞">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/taotang-nanguadeng.gif" width="160" alt="ハロウィーン" title="ハロウィーン">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/cha-zhuyu-shangju.gif" width="160" alt="菊のお花見" title="菊のお花見">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/fanghedeng.gif" width="160" alt="灯籠流し" title="灯籠流し">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/menghua-xiaoyouling.gif" width="160" alt="小さなおばけ" title="小さなおばけ">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/zhuangdian-shengdanshu.gif" width="160" alt="クリスマスツリー" title="クリスマスツリー">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/fang-kongmingdeng.gif" width="160" alt="ランタン飛ばし" title="ランタン飛ばし">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chitangyuan.gif" width="160" alt="湯円" title="湯円">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/chijiaozi.gif" width="160" alt="ギョーザ" title="ギョーザ">
+</p>
+
+**セリフ**
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/shia-chishenme.gif" width="160" alt="何を食べよう？" title="何を食べよう？">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/shendu-sikao-suisuinian.gif" width="160" alt="考えごとのひとりごと" title="考えごとのひとりごと">
+</p>
+
+**クリックへの反応**
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/dianji-huiying-kaixin-yuedong.gif" width="160" alt="うれしくジャンプ" title="うれしくジャンプ">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/dianji-huiying-haixiu-jingya.gif" width="160" alt="照れてびっくり" title="照れてびっくり">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/dianji-huiying-aojiao-shengqi-ceshen-zhanshi.gif" width="160" alt="ツンと怒る" title="ツンと怒る">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/dianji-huiying-naoyang-gegexiao.gif" width="160" alt="くすぐられて笑う" title="くすぐられて笑う">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/dianji-huiying-yuanqi-huishou.gif" width="160" alt="元気に手を振る" title="元気に手を振る">
+</p>
+
+**ドラッグ**
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/beishubiao-tuozhuai-xuankong-fankui.gif" width="160" alt="つままれて宙ぶらりん" title="つままれて宙ぶらりん">
+</p>
+
+**残高イベント**（利用率に応じて、満額から残量不足・使い切りへ）
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/qian-dai-man-yi.gif" width="160" alt="残高：袋いっぱい" title="残高：袋いっぱい">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/jin-dai-ding-dang.gif" width="160" alt="残高：まだたっぷり" title="残高：まだたっぷり">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/qian-dai-ru-chang.gif" width="160" alt="残高：いつもどおり" title="残高：いつもどおり">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/shu-jin-zhou-mei.gif" width="160" alt="残高：ちょっと心配" title="残高：ちょっと心配">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/dai-kong-ru-xi.gif" width="160" alt="残高：からっぽ寸前" title="残高：からっぽ寸前">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/fen-wen-bu-sheng.gif" width="160" alt="残高：使い切った" title="残高：使い切った">
+</p>
+
+**発話アニメーション**（ひとりごと・会話で候補から1つを再生）
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/suisuinian-cazhuo-suisuinian.gif" width="160" alt="机を拭きながらひとりごと" title="机を拭きながらひとりごと">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/suisuinian-fadai-suisuinian.gif" width="160" alt="ぼんやりひとりごと" title="ぼんやりひとりごと">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/suisuinian-duiping-suisuinian.gif" width="160" alt="画面を見てひとりごと" title="画面を見てひとりごと">
+</p>
+
+**作業状態のアニメーション**（DSHのイベントに応じて思考・作業・整理・待機・成功・エラーを表示）
+
+<p>
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/gongzuozhuangtai-sikao-maopao.gif" width="160" alt="作業：考え中" title="作業：考え中">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/gongzuozhuangtai-manglu-dianan.gif" width="160" alt="作業：処理中" title="作業：処理中">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/gongzuozhuangtai-qingdian-guidang.gif" width="160" alt="作業：整理中" title="作業：整理中">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/gongzuozhuangtai-yuandi-duobu-zhangwang.gif" width="160" alt="作業：確認待ち" title="作業：確認待ち">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/gongzuozhuangtai-queyue-qingzhu.gif" width="160" alt="作業：完了！" title="作業：完了！">
+  <img src="https://raw.githubusercontent.com/souta-lab/dsh-pet/ja/dsh-pet/assets/preview/gongzuozhuangtai-chuitou-tanqi-maohan.gif" width="160" alt="作業：エラー" title="作業：エラー">
+</p>
+
+> 透過部分はGIFプレビューではページの背景色で表示されます。実際のWebMも透過素材です。
+
+## 素材生成の手順
+
+プロンプトと動画加工の手順は[リポジトリのREADME](https://github.com/souta-lab/dsh-pet/blob/ja/README.md#自分のペット素材を生成する)を参照してください。

@@ -1,5 +1,5 @@
-# 单包工程：pnpm v11 settings 家用配置文件
-# overrides 强制全依赖树（含 tsdown 嵌套）统一使用与 tsdown 0.8.0 兼容的 rolldown
+# 単一パッケージ用のpnpm v11設定
+# overridesで全依存（tsdownの内部も含む）に互換性のあるrolldownを指定
 packages: []
 minimumReleaseAgeExclude:
   - '@deepseek-ai/dsh-agent-default-model@0.2.0-rc.1'
